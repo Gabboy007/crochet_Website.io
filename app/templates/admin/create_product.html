@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create Product</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <style>
+        .admin-form-wrapper {
+            width: min(950px, calc(100% - 24px));
+            margin: 40px auto;
+            background: rgba(255, 255, 255, 0.92);
+            border-radius: 24px;
+            padding: 28px;
+            box-shadow: 0 20px 60px rgba(180, 150, 205, 0.16);
+        }
+
+        .admin-form-header {
+            margin-bottom: 24px;
+        }
+
+        .admin-form-header p {
+            color: #7d7391;
+        }
+
+        .admin-form {
+            display: grid;
+            gap: 18px;
+        }
+
+        .admin-form label {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            font-weight: 500;
+            color: #433a57;
+        }
+
+        .admin-form input,
+        .admin-form textarea {
+            padding: 14px 16px;
+            border-radius: 14px;
+            border: 1px solid rgba(180, 155, 200, 0.22);
+            font: inherit;
+            background: #fff;
+            color: #433a57;
+        }
+
+        .admin-form textarea {
+            min-height: 120px;
+            resize: vertical;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 220px;
+            gap: 14px;
+        }
+
+        .form-actions {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+            margin-top: 8px;
+        }
+
+        .preview-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+            gap: 12px;
+            margin-top: 8px;
+        }
+
+        .preview-card {
+            border: 1px solid rgba(180, 155, 200, 0.22);
+            border-radius: 16px;
+            overflow: hidden;
+            background: #fff;
+        }
+
+        .preview-card img {
+            width: 100%;
+            height: 130px;
+            object-fit: cover;
+            display: block;
+        }
+
+        .preview-card p {
+            padding: 8px 10px;
+            font-size: 0.85rem;
+            color: #7d7391;
+            word-break: break-word;
+        }
+
+        @media (max-width: 700px) {
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="admin-form-wrapper">
+        <div class="admin-form-header">
+            <h1>Add New Product</h1>
+            <p>Upload multiple images. Use square images for the best display.</p>
+        </div>
+
+        <form method="POST" enctype="multipart/form-data" class="admin-form">
+            <label>
+                Product Title
+                <input type="text" name="title" required>
+            </label>
+
+            <div class="form-row">
+                <label>
+                    Description
+                    <textarea name="description" placeholder="Write product details..."></textarea>
+                </label>
+
+                <label>
+                    Price
+                    <input type="number" name="price" step="0.01" min="0" placeholder="₱ 0.00">
+                </label>
+            </div>
+
+            <label>
+                Product Images
+                <input type="file" name="images" id="imagesInput" multiple accept=".png,.jpg,.jpeg,.gif,.webp">
+            </label>
+
+            <div id="imagePreview" class="preview-grid"></div>
+
+            <div class="form-actions">
+                <button type="submit" class="btn btn-primary">Save Product</button>
+                <a href="{{ url_for('main.admin_dashboard') }}" class="btn btn-secondary">Cancel</a>
+            </div>
+        </form>
+    </div>
+
+    <script>
+        const imagesInput = document.getElementById("imagesInput");
+        const imagePreview = document.getElementById("imagePreview");
+
+        if (imagesInput && imagePreview) {
+            imagesInput.addEventListener("change", function () {
+                imagePreview.innerHTML = "";
+                const files = Array.from(this.files);
+
+                files.forEach((file) => {
+                    if (!file.type.startsWith("image/")) return;
+
+                    const reader = new FileReader();
+                    reader.onload = function (e) {
+                        const card = document.createElement("div");
+                        card.className = "preview-card";
+                        card.innerHTML = `
+                            <img src="${e.target.result}" alt="${file.name}">
+                            <p>${file.name}</p>
+                        `;
+                        imagePreview.appendChild(card);
+                    };
+                    reader.readAsDataURL(file);
+                });
+            });
+        }
+    </script>
+</body>
+</html>

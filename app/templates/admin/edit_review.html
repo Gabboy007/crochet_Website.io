@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Review</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <style>
+        .admin-wrapper {
+            width: min(1100px, calc(100% - 24px));
+            margin: 40px auto;
+            background: rgba(255, 255, 255, 0.92);
+            border-radius: 24px;
+            padding: 28px;
+            box-shadow: 0 20px 60px rgba(180, 150, 205, 0.16);
+        }
+
+        .edit-grid {
+            display: grid;
+            grid-template-columns: 260px 1fr;
+            gap: 24px;
+            align-items: start;
+        }
+
+        .main-thumb {
+            width: 100%;
+            aspect-ratio: 1 / 1;
+            object-fit: cover;
+            border-radius: 18px;
+        }
+
+        .all-images {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-top: 14px;
+        }
+
+        .image-box {
+            width: 90px;
+        }
+
+        .image-box img {
+            width: 90px;
+            height: 90px;
+            object-fit: cover;
+            border-radius: 12px;
+            border: 2px solid transparent;
+            display: block;
+            margin-bottom: 6px;
+        }
+
+        .image-box img.main {
+            border-color: #ceb7f4;
+        }
+
+        .small-label {
+            display: flex !important;
+            align-items: center;
+            gap: 6px;
+            font-size: 0.82rem;
+            color: #7d7391;
+            margin-bottom: 6px;
+        }
+
+        .mini-delete-form {
+            margin: 0;
+        }
+
+        .mini-delete-form button {
+            width: 100%;
+            padding: 8px 10px;
+            border-radius: 10px;
+            background: #f6f1fb;
+            color: #433a57;
+            border: none;
+            cursor: pointer;
+        }
+
+        .admin-form {
+            display: grid;
+            gap: 14px;
+        }
+
+        .admin-form label {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            color: #433a57;
+            font-weight: 500;
+        }
+
+        .admin-form input,
+        .admin-form textarea {
+            padding: 12px 14px;
+            border-radius: 14px;
+            border: 1px solid rgba(180, 155, 200, 0.22);
+            font: inherit;
+            background: #fff;
+        }
+
+        .admin-form textarea {
+            min-height: 110px;
+            resize: vertical;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 220px;
+            gap: 14px;
+        }
+
+        .form-actions {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        @media (max-width: 900px) {
+            .edit-grid,
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="admin-wrapper">
+        <h1>Edit Review</h1>
+
+        <div class="edit-grid">
+            <div>
+                {% if review.main_image %}
+                    <img class="main-thumb" src="{{ url_for('static', filename=review.main_image.image_path) }}" alt="{{ review.title }}">
+                {% else %}
+                    <img class="main-thumb" src="{{ url_for('static', filename='images/review1.jpg') }}" alt="No image">
+                {% endif %}
+
+                <div class="all-images">
+                    {% for image in review.images %}
+                        <div class="image-box">
+                            <img
+                                src="{{ url_for('static', filename=image.image_path) }}"
+                                alt="{{ review.title }}"
+                                class="{% if image.is_main %}main{% endif %}"
+                            >
+                            <form class="mini-delete-form" method="POST" action="{{ url_for('main.delete_review_image', review_id=review.id, image_id=image.id) }}" onsubmit="return confirm('Delete this image?');">
+                                <button type="submit">Delete</button>
+                            </form>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+
+            <div>
+                <form method="POST" enctype="multipart/form-data" class="admin-form">
+                    <label>
+                        Customer Name
+                        <input type="text" name="customer_name" value="{{ review.customer_name }}" required>
+                    </label>
+
+                    <div class="form-row">
+                        <label>
+                            Review Title
+                            <input type="text" name="title" value="{{ review.title }}" required>
+                        </label>
+
+                        <label>
+                            Score
+                            <input type="text" name="score" value="{{ review.score }}">
+                        </label>
+                    </div>
+
+                    <label>
+                        Badge
+                        <input type="text" name="badge" value="{{ review.badge or '' }}">
+                    </label>
+
+                    <label>
+                        Review Text
+                        <textarea name="review_text" required>{{ review.review_text }}</textarea>
+                    </label>
+
+                    {% if review.images %}
+                    <label>
+                        Main Image
+                        <div>
+                            {% for image in review.images %}
+                                <label class="small-label">
+                                    <input type="radio" name="main_image_id" value="{{ image.id }}" {% if image.is_main %}checked{% endif %}>
+                                    Image {{ loop.index }}
+                                </label>
+                            {% endfor %}
+                        </div>
+                    </label>
+                    {% endif %}
+
+                    <label>
+                        Add More Images
+                        <input type="file" name="images" multiple accept=".png,.jpg,.jpeg,.gif,.webp">
+                    </label>
+
+                    <div class="form-actions">
+                        <button type="submit" class="btn btn-primary">Update Review</button>
+                        <a href="{{ url_for('main.reviews_dashboard') }}" class="btn btn-secondary">Cancel</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
