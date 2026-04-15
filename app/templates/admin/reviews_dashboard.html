@@ -12,24 +12,36 @@
 {% block admin_content %}
 <section class="admin-overview" aria-label="Reviews summary">
     <article class="admin-summary-card accent-coral">
-        <span class="admin-summary-label">Reviews</span>
+        <div class="admin-summary-top">
+            <span class="admin-summary-icon">R</span>
+            <span class="admin-summary-label">Reviews</span>
+        </div>
         <strong>{{ stats.reviews }}</strong>
-        <p>Customer cards in the showcase.</p>
+        <p>Customer cards ready for the showcase.</p>
     </article>
     <article class="admin-summary-card accent-mint">
-        <span class="admin-summary-label">Review Images</span>
+        <div class="admin-summary-top">
+            <span class="admin-summary-icon">I</span>
+            <span class="admin-summary-label">Review Images</span>
+        </div>
         <strong>{{ stats.review_images }}</strong>
-        <p>Photos attached to customer stories.</p>
+        <p>Photos attached to happy customer stories.</p>
     </article>
     <article class="admin-summary-card accent-gold">
-        <span class="admin-summary-label">Badges</span>
+        <div class="admin-summary-top">
+            <span class="admin-summary-icon">B</span>
+            <span class="admin-summary-label">Badges</span>
+        </div>
         <strong>{{ stats.badged_reviews }}</strong>
-        <p>Reviews with a custom label.</p>
+        <p>Reviews with sweet custom labels.</p>
     </article>
     <article class="admin-summary-card accent-ink">
-        <span class="admin-summary-label">Products</span>
+        <div class="admin-summary-top">
+            <span class="admin-summary-icon">P</span>
+            <span class="admin-summary-label">Products</span>
+        </div>
         <strong>{{ stats.products }}</strong>
-        <p>Catalog items supporting the shop.</p>
+        <p>Catalog pieces supporting the storefront.</p>
     </article>
 </section>
 

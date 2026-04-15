@@ -1558,17 +1558,36 @@ img { display: block; width: 100%; max-width: 100%; }
   box-shadow: 12px 0 34px rgba(165, 134, 190, 0.12);
 }
 
-.admin-page .hybrid-admin .admin-menu-button {
-  width: calc(100% - 24px);
-  height: 44px;
+.admin-sidebar-brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
   margin: 14px 12px 4px;
+  padding: 12px;
   border-radius: 8px;
-  background: rgba(255, 255, 255, 0.72);
+  background: rgba(255, 255, 255, 0.78);
   border: 1px solid rgba(206, 183, 244, 0.32);
+  box-shadow: 0 12px 26px rgba(165, 134, 190, 0.12);
 }
 
-.admin-page .hybrid-admin .admin-menu-button span {
-  background: #6b5a86;
+.admin-sidebar-brand strong {
+  width: 38px;
+  height: 38px;
+  display: grid;
+  place-items: center;
+  flex: 0 0 auto;
+  border-radius: 8px;
+  background: linear-gradient(135deg, #ceb7f4, #f7bfd6, #aee3cb);
+  color: #3f3552;
+  font-size: 0.95rem;
+  font-weight: 800;
+}
+
+.admin-sidebar-brand span {
+  min-width: 0;
+  color: #433a57;
+  font-weight: 800;
+  line-height: 1.2;
 }
 
 .admin-page .hybrid-admin .admin-nav {
@@ -1704,6 +1723,53 @@ img { display: block; width: 100%; max-width: 100%; }
   border-top-color: #ceb7f4;
 }
 
+.admin-page .hybrid-admin .admin-summary-card {
+  position: relative;
+  min-height: 164px;
+  overflow: hidden;
+}
+
+.admin-page .hybrid-admin .admin-summary-card::after {
+  content: "";
+  position: absolute;
+  right: -28px;
+  bottom: -34px;
+  width: 110px;
+  height: 110px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(255, 221, 234, 0.95), rgba(234, 220, 255, 0.52) 58%, transparent 68%);
+  pointer-events: none;
+}
+
+.admin-page .hybrid-admin .admin-summary-top {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.admin-page .hybrid-admin .admin-summary-icon {
+  width: 42px;
+  height: 42px;
+  display: grid;
+  place-items: center;
+  flex: 0 0 auto;
+  border-radius: 8px;
+  background: linear-gradient(135deg, #eadcff, #ffddea);
+  color: #5d4f74;
+  font-size: 0.86rem;
+  font-weight: 800;
+  box-shadow: 0 12px 24px rgba(165, 134, 190, 0.16);
+}
+
+.admin-page .hybrid-admin .admin-summary-card strong,
+.admin-page .hybrid-admin .admin-summary-card p {
+  position: relative;
+  z-index: 1;
+}
+
 .admin-page .hybrid-admin .admin-summary-card.accent-mint {
   border-top-color: #aee3cb;
 }
@@ -1753,10 +1819,76 @@ img { display: block; width: 100%; max-width: 100%; }
   border-color: rgba(206, 183, 244, 0.35);
 }
 
+.admin-page .login-shell {
+  min-height: 100vh;
+  width: min(100% - 24px, 1180px);
+  position: relative;
+}
+
+.admin-page .login-card {
+  position: relative;
+  overflow: hidden;
+  border-radius: 8px;
+  background:
+    linear-gradient(135deg, rgba(255, 221, 234, 0.88), rgba(255, 255, 255, 0.92) 48%, rgba(221, 246, 234, 0.78)),
+    #ffffff;
+  border: 1px solid rgba(255, 255, 255, 0.9);
+  box-shadow: 0 28px 70px rgba(165, 134, 190, 0.22);
+}
+
+.admin-page .login-card::before {
+  content: "CB";
+  width: 58px;
+  height: 58px;
+  display: grid;
+  place-items: center;
+  margin-bottom: 4px;
+  border-radius: 8px;
+  background: linear-gradient(135deg, #ceb7f4, #f7bfd6, #aee3cb);
+  color: #3f3552;
+  font-weight: 800;
+}
+
+.admin-page .login-card::after {
+  content: "";
+  position: absolute;
+  right: -42px;
+  top: -42px;
+  width: 150px;
+  height: 150px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(234, 220, 255, 0.92), rgba(255, 221, 234, 0.42) 62%, transparent 68%);
+  pointer-events: none;
+}
+
+.admin-page .login-card h1 {
+  color: #433a57;
+}
+
+.admin-page .login-card .admin-form input {
+  border-color: rgba(206, 183, 244, 0.4);
+  background: rgba(255, 255, 255, 0.86);
+}
+
+.admin-page .login-card .btn {
+  border-radius: 8px;
+}
+
 @media (max-width: 768px) {
-  .admin-page .hybrid-admin .admin-menu-button {
-    width: 40px;
+  .admin-sidebar-brand {
+    justify-content: center;
     margin: 12px 8px;
+    padding: 8px 4px;
+  }
+
+  .admin-sidebar-brand strong {
+    width: 32px;
+    height: 32px;
+    font-size: 0.78rem;
+  }
+
+  .admin-sidebar-brand span {
+    display: none;
   }
 
   .admin-page .hybrid-admin .admin-nav {

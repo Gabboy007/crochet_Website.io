@@ -12,24 +12,36 @@
 {% block admin_content %}
 <section class="admin-overview" aria-label="Catalog summary">
     <article class="admin-summary-card accent-mint">
-        <span class="admin-summary-label">Products</span>
+        <div class="admin-summary-top">
+            <span class="admin-summary-icon">P</span>
+            <span class="admin-summary-label">Products</span>
+        </div>
         <strong>{{ stats.products }}</strong>
-        <p>Items in your storefront catalog.</p>
+        <p>Items ready for your handmade catalog.</p>
     </article>
     <article class="admin-summary-card accent-coral">
-        <span class="admin-summary-label">Gallery Images</span>
+        <div class="admin-summary-top">
+            <span class="admin-summary-icon">I</span>
+            <span class="admin-summary-label">Gallery Images</span>
+        </div>
         <strong>{{ stats.product_images }}</strong>
-        <p>Photos attached across all products.</p>
+        <p>Photos bringing every crochet piece to life.</p>
     </article>
     <article class="admin-summary-card accent-gold">
-        <span class="admin-summary-label">With Prices</span>
+        <div class="admin-summary-top">
+            <span class="admin-summary-icon">PHP</span>
+            <span class="admin-summary-label">With Prices</span>
+        </div>
         <strong>{{ stats.priced_products }}</strong>
-        <p>Products ready with visible pricing.</p>
+        <p>Products with pricing ready for shoppers.</p>
     </article>
     <article class="admin-summary-card accent-ink">
-        <span class="admin-summary-label">Reviews</span>
+        <div class="admin-summary-top">
+            <span class="admin-summary-icon">R</span>
+            <span class="admin-summary-label">Reviews</span>
+        </div>
         <strong>{{ stats.reviews }}</strong>
-        <p>Customer stories available to feature.</p>
+        <p>Customer stories adding trust to the shop.</p>
     </article>
 </section>
 
