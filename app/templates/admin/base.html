@@ -10,38 +10,75 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
 </head>
 <body class="admin-page">
-    <div class="bg-orb orb-1"></div>
-    <div class="bg-orb orb-2"></div>
-    <div class="bg-orb orb-3"></div>
+    <div class="admin-workspace hybrid-admin">
+        <aside class="admin-sidebar" aria-label="Admin navigation">
+            <button class="admin-menu-button" type="button" aria-label="Menu">
+                <span></span><span></span><span></span>
+            </button>
 
-    <main class="admin-shell">
-        <section class="admin-hero glass">
-            <div>
-                <p class="admin-eyebrow">Crochet Bloom Admin</p>
-                <h1>{% block admin_heading %}Admin{% endblock %}</h1>
-                <p class="admin-muted">{% block admin_subtitle %}{% endblock %}</p>
-            </div>
+            <nav class="admin-nav">
+                <p class="admin-nav-title">Assets</p>
+                <a href="{{ url_for('main.admin_dashboard') }}" class="{% if request.endpoint == 'main.admin_dashboard' %}active{% endif %}">
+                    <span>C</span> Customer Assets
+                </a>
+                <a href="{{ url_for('main.reviews_dashboard') }}" class="{% if request.endpoint == 'main.reviews_dashboard' %}active{% endif %}">
+                    <span>R</span> Resources
+                </a>
+                <a href="{{ url_for('main.create_product') }}">
+                    <span>+</span> Service Standards
+                </a>
+                <a href="{{ url_for('main.create_review') }}">
+                    <span>*</span> Warranty
+                </a>
 
-            <div class="admin-hero-actions">
-                {% block admin_actions %}{% endblock %}
-                <a href="{{ url_for('main.index') }}" class="btn btn-secondary">View Website</a>
+                <p class="admin-nav-title">Planning</p>
+                <a href="{{ url_for('main.create_product') }}">
+                    <span>P</span> PPM Planner
+                </a>
+                <a href="{{ url_for('main.create_review') }}">
+                    <span>B</span> Booking Setups
+                </a>
+
+                <p class="admin-nav-title">Logs</p>
+                <a href="{{ url_for('main.index') }}">
+                    <span>W</span> View Website
+                </a>
                 <form method="POST" action="{{ url_for('main.admin_logout') }}">
-                    <button type="submit" class="btn btn-secondary">Log Out</button>
+                    <button type="submit"><span>L</span> Log Out</button>
                 </form>
+            </nav>
+
+            <div class="admin-area-switcher">
+                <strong>A</strong>
+                <span>Assets</span>
             </div>
-        </section>
+        </aside>
 
-        {% with messages = get_flashed_messages(with_categories=true) %}
-            {% if messages %}
-                <section class="flash-stack">
-                    {% for category, message in messages %}
-                        <div class="flash-message flash-{{ category }}">{{ message }}</div>
-                    {% endfor %}
-                </section>
-            {% endif %}
-        {% endwith %}
+        <main class="admin-shell">
+            <section class="admin-hero">
+                <div class="admin-hero-copy">
+                    <p class="admin-eyebrow">Crochet Bloom Admin</p>
+                    <h1>{% block admin_heading %}Admin{% endblock %}</h1>
+                    <p>{% block admin_subtitle %}{% endblock %}</p>
+                </div>
 
-        {% block admin_content %}{% endblock %}
-    </main>
+                <div class="admin-hero-actions">
+                    {% block admin_actions %}{% endblock %}
+                </div>
+            </section>
+
+            {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                    <section class="flash-stack">
+                        {% for category, message in messages %}
+                            <div class="flash-message flash-{{ category }}">{{ message }}</div>
+                        {% endfor %}
+                    </section>
+                {% endif %}
+            {% endwith %}
+
+            {% block admin_content %}{% endblock %}
+        </main>
+    </div>
 </body>
 </html>

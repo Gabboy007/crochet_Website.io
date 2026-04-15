@@ -69,7 +69,13 @@ def admin_logout():
 @admin_required
 def admin_dashboard():
     products = Product.query.order_by(Product.sort_order.asc(), Product.id.asc()).all()
-    return render_template("admin/dashboard.html", products=products)
+    stats = {
+        "products": len(products),
+        "product_images": ProductImage.query.count(),
+        "priced_products": sum(1 for product in products if product.price is not None),
+        "reviews": Review.query.count(),
+    }
+    return render_template("admin/dashboard.html", products=products, stats=stats)
 
 
 @main.route("/admin/products/create", methods=["GET", "POST"])
@@ -228,7 +234,13 @@ def delete_product_image(product_id, image_id):
 @admin_required
 def reviews_dashboard():
     reviews = Review.query.order_by(Review.sort_order.asc(), Review.id.asc()).all()
-    return render_template("admin/reviews_dashboard.html", reviews=reviews)
+    stats = {
+        "reviews": len(reviews),
+        "review_images": ReviewImage.query.count(),
+        "badged_reviews": sum(1 for review in reviews if review.badge),
+        "products": Product.query.count(),
+    }
+    return render_template("admin/reviews_dashboard.html", reviews=reviews, stats=stats)
 
 
 @main.route("/admin/reviews/create", methods=["GET", "POST"])

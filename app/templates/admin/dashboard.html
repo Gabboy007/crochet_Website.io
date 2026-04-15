@@ -10,7 +10,38 @@
 {% endblock %}
 
 {% block admin_content %}
+<section class="admin-overview" aria-label="Catalog summary">
+    <article class="admin-summary-card accent-mint">
+        <span class="admin-summary-label">Products</span>
+        <strong>{{ stats.products }}</strong>
+        <p>Items in your storefront catalog.</p>
+    </article>
+    <article class="admin-summary-card accent-coral">
+        <span class="admin-summary-label">Gallery Images</span>
+        <strong>{{ stats.product_images }}</strong>
+        <p>Photos attached across all products.</p>
+    </article>
+    <article class="admin-summary-card accent-gold">
+        <span class="admin-summary-label">With Prices</span>
+        <strong>{{ stats.priced_products }}</strong>
+        <p>Products ready with visible pricing.</p>
+    </article>
+    <article class="admin-summary-card accent-ink">
+        <span class="admin-summary-label">Reviews</span>
+        <strong>{{ stats.reviews }}</strong>
+        <p>Customer stories available to feature.</p>
+    </article>
+</section>
+
 {% if products %}
+<div class="admin-section-head">
+    <div>
+        <p class="admin-eyebrow">Catalog</p>
+        <h2>Product List</h2>
+    </div>
+    <p class="admin-muted">Sorted by display order, then by product ID.</p>
+</div>
+
 <section class="admin-card-grid">
     {% for product in products %}
     <article class="admin-entity-card">

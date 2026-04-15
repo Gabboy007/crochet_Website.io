@@ -10,7 +10,38 @@
 {% endblock %}
 
 {% block admin_content %}
+<section class="admin-overview" aria-label="Reviews summary">
+    <article class="admin-summary-card accent-coral">
+        <span class="admin-summary-label">Reviews</span>
+        <strong>{{ stats.reviews }}</strong>
+        <p>Customer cards in the showcase.</p>
+    </article>
+    <article class="admin-summary-card accent-mint">
+        <span class="admin-summary-label">Review Images</span>
+        <strong>{{ stats.review_images }}</strong>
+        <p>Photos attached to customer stories.</p>
+    </article>
+    <article class="admin-summary-card accent-gold">
+        <span class="admin-summary-label">Badges</span>
+        <strong>{{ stats.badged_reviews }}</strong>
+        <p>Reviews with a custom label.</p>
+    </article>
+    <article class="admin-summary-card accent-ink">
+        <span class="admin-summary-label">Products</span>
+        <strong>{{ stats.products }}</strong>
+        <p>Catalog items supporting the shop.</p>
+    </article>
+</section>
+
 {% if reviews %}
+<div class="admin-section-head">
+    <div>
+        <p class="admin-eyebrow">Customer Proof</p>
+        <h2>Review List</h2>
+    </div>
+    <p class="admin-muted">Sorted by display order, then by review ID.</p>
+</div>
+
 <section class="admin-card-grid">
     {% for review in reviews %}
     <article class="admin-entity-card review-layout">
