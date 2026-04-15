@@ -1542,3 +1542,239 @@ img { display: block; width: 100%; max-width: 100%; }
     margin-left: 0;
   }
 }
+
+/* Cute Crochet Bloom dashboard theme */
+.admin-page .hybrid-admin {
+  background:
+    linear-gradient(90deg, rgba(247, 191, 214, 0.13) 0 1px, transparent 1px),
+    linear-gradient(180deg, rgba(174, 227, 203, 0.16) 0 1px, transparent 1px),
+    linear-gradient(135deg, #fff8fb 0%, #fbfffd 48%, #f8f3ff 100%);
+  background-size: 40px 40px, 40px 40px, auto;
+}
+
+.admin-page .hybrid-admin .admin-sidebar {
+  background: linear-gradient(180deg, #fff7fb 0%, #f6fff9 52%, #f7f2ff 100%);
+  border-right: 1px solid rgba(206, 183, 244, 0.35);
+  box-shadow: 12px 0 34px rgba(165, 134, 190, 0.12);
+}
+
+.admin-page .hybrid-admin .admin-menu-button {
+  width: calc(100% - 24px);
+  height: 44px;
+  margin: 14px 12px 4px;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.72);
+  border: 1px solid rgba(206, 183, 244, 0.32);
+}
+
+.admin-page .hybrid-admin .admin-menu-button span {
+  background: #6b5a86;
+}
+
+.admin-page .hybrid-admin .admin-nav {
+  padding: 8px 10px 14px;
+}
+
+.admin-page .hybrid-admin .admin-nav-title {
+  margin: 18px 8px 8px;
+  color: #7d7391;
+  font-size: 0.78rem;
+  letter-spacing: 0;
+  text-transform: uppercase;
+}
+
+.admin-page .hybrid-admin .admin-nav a,
+.admin-page .hybrid-admin .admin-nav button {
+  min-height: 42px;
+  margin-bottom: 7px;
+  padding: 9px 10px;
+  border: 1px solid transparent;
+  border-left: 0;
+  border-radius: 8px;
+  color: #433a57;
+  font-weight: 600;
+}
+
+.admin-page .hybrid-admin .admin-nav a span,
+.admin-page .hybrid-admin .admin-nav button span {
+  width: 28px;
+  height: 28px;
+  display: grid;
+  place-items: center;
+  flex: 0 0 auto;
+  border-radius: 8px;
+  background: #eadcff;
+  color: #5d4f74;
+  font-size: 0.82rem;
+  font-weight: 800;
+}
+
+.admin-page .hybrid-admin .admin-nav a:nth-of-type(2) span {
+  background: #ddf6ea;
+  color: #2f7d58;
+}
+
+.admin-page .hybrid-admin .admin-nav a:hover,
+.admin-page .hybrid-admin .admin-nav button:hover,
+.admin-page .hybrid-admin .admin-nav a.active {
+  background: rgba(255, 255, 255, 0.9);
+  border-color: rgba(206, 183, 244, 0.35);
+  box-shadow: 0 12px 26px rgba(165, 134, 190, 0.13);
+}
+
+.admin-page .hybrid-admin .admin-nav a.active {
+  color: #3f3552;
+}
+
+.admin-page .hybrid-admin .admin-nav a.active span {
+  background: linear-gradient(135deg, #eadcff, #ffddea, #ddf6ea);
+}
+
+.admin-page .hybrid-admin .admin-area-switcher {
+  margin: 10px;
+  min-height: 58px;
+  border: 1px solid rgba(206, 183, 244, 0.35);
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.78);
+  box-shadow: 0 12px 26px rgba(165, 134, 190, 0.12);
+}
+
+.admin-page .hybrid-admin .admin-area-switcher strong {
+  border-radius: 8px;
+  background: linear-gradient(135deg, #ceb7f4, #f7bfd6);
+  color: #3f3552;
+}
+
+.admin-page .hybrid-admin .admin-area-switcher span {
+  color: #433a57;
+  font-weight: 700;
+}
+
+.admin-page .hybrid-admin .admin-hero,
+.admin-page .hybrid-admin .admin-summary-card,
+.admin-page .hybrid-admin .admin-entity-card,
+.admin-page .hybrid-admin .admin-form-shell,
+.admin-page .hybrid-admin .editor-sidebar,
+.admin-page .hybrid-admin .login-card,
+.admin-page .hybrid-admin .admin-empty-state {
+  background: rgba(255, 255, 255, 0.86);
+  border: 1px solid rgba(255, 255, 255, 0.88);
+  box-shadow: 0 22px 50px rgba(165, 134, 190, 0.16);
+}
+
+.admin-page .hybrid-admin .admin-hero {
+  background:
+    linear-gradient(135deg, rgba(255, 221, 234, 0.82), rgba(255, 255, 255, 0.88) 44%, rgba(221, 246, 234, 0.72)),
+    #ffffff;
+}
+
+.admin-page .hybrid-admin .admin-hero::before {
+  border-top-color: #f7bfd6;
+}
+
+.admin-page .hybrid-admin .admin-hero h1 {
+  color: #433a57;
+}
+
+.admin-page .hybrid-admin .admin-hero p,
+.admin-page .hybrid-admin .admin-muted,
+.admin-page .hybrid-admin .admin-summary-card p,
+.admin-page .hybrid-admin .admin-stat-label {
+  color: #7d7391;
+}
+
+.admin-page .hybrid-admin .btn-primary {
+  background: linear-gradient(135deg, #ceb7f4, #f7bfd6, #aee3cb);
+  color: #3f3552;
+}
+
+.admin-page .hybrid-admin .btn-secondary {
+  background: rgba(255, 255, 255, 0.86);
+  color: #433a57;
+  border-color: rgba(206, 183, 244, 0.35);
+}
+
+.admin-page .hybrid-admin .btn-danger {
+  background: rgba(255, 221, 234, 0.58);
+  color: #8d364b;
+  border-color: rgba(247, 191, 214, 0.75);
+}
+
+.admin-page .hybrid-admin .admin-summary-card {
+  border-top-color: #ceb7f4;
+}
+
+.admin-page .hybrid-admin .admin-summary-card.accent-mint {
+  border-top-color: #aee3cb;
+}
+
+.admin-page .hybrid-admin .admin-summary-card.accent-coral {
+  border-top-color: #f7bfd6;
+}
+
+.admin-page .hybrid-admin .admin-summary-card.accent-gold {
+  border-top-color: #f5d37d;
+}
+
+.admin-page .hybrid-admin .admin-summary-card.accent-ink {
+  border-top-color: #ceb7f4;
+}
+
+.admin-page .hybrid-admin .admin-summary-card strong,
+.admin-page .hybrid-admin .admin-entity-top h2,
+.admin-page .hybrid-admin .admin-section-head h2 {
+  color: #433a57;
+}
+
+.admin-page .hybrid-admin .admin-summary-label,
+.admin-page .hybrid-admin .admin-eyebrow,
+.admin-page .hybrid-admin .status-pill {
+  background: rgba(255, 255, 255, 0.75);
+  border-color: rgba(206, 183, 244, 0.35);
+  color: #6b5a86;
+}
+
+.admin-page .hybrid-admin .admin-stat-row > div {
+  background: rgba(255, 255, 255, 0.72);
+  border-color: rgba(206, 183, 244, 0.3);
+}
+
+.admin-page .hybrid-admin .admin-entity-card {
+  transition: transform 0.22s ease, box-shadow 0.22s ease;
+}
+
+.admin-page .hybrid-admin .admin-entity-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 28px 58px rgba(165, 134, 190, 0.2);
+}
+
+.admin-page .hybrid-admin .admin-entity-media img,
+.admin-page .hybrid-admin .main-thumb {
+  border-color: rgba(206, 183, 244, 0.35);
+}
+
+@media (max-width: 768px) {
+  .admin-page .hybrid-admin .admin-menu-button {
+    width: 40px;
+    margin: 12px 8px;
+  }
+
+  .admin-page .hybrid-admin .admin-nav {
+    padding: 4px 6px 12px;
+  }
+
+  .admin-page .hybrid-admin .admin-nav a,
+  .admin-page .hybrid-admin .admin-nav button {
+    padding: 8px 0;
+  }
+
+  .admin-page .hybrid-admin .admin-nav a span,
+  .admin-page .hybrid-admin .admin-nav button span {
+    width: 30px;
+    height: 30px;
+  }
+
+  .admin-page .hybrid-admin .admin-area-switcher {
+    margin: 8px 6px;
+  }
+}
