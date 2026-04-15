@@ -17,29 +17,15 @@
             </button>
 
             <nav class="admin-nav">
-                <p class="admin-nav-title">Assets</p>
+                <p class="admin-nav-title">Manage</p>
                 <a href="{{ url_for('main.admin_dashboard') }}" class="{% if request.endpoint == 'main.admin_dashboard' %}active{% endif %}">
-                    <span>C</span> Customer Assets
+                    <span>P</span> Products
                 </a>
                 <a href="{{ url_for('main.reviews_dashboard') }}" class="{% if request.endpoint == 'main.reviews_dashboard' %}active{% endif %}">
-                    <span>R</span> Resources
-                </a>
-                <a href="{{ url_for('main.create_product') }}">
-                    <span>+</span> Service Standards
-                </a>
-                <a href="{{ url_for('main.create_review') }}">
-                    <span>*</span> Warranty
+                    <span>R</span> Reviews
                 </a>
 
-                <p class="admin-nav-title">Planning</p>
-                <a href="{{ url_for('main.create_product') }}">
-                    <span>P</span> PPM Planner
-                </a>
-                <a href="{{ url_for('main.create_review') }}">
-                    <span>B</span> Booking Setups
-                </a>
-
-                <p class="admin-nav-title">Logs</p>
+                <p class="admin-nav-title">Account</p>
                 <a href="{{ url_for('main.index') }}">
                     <span>W</span> View Website
                 </a>
@@ -49,8 +35,8 @@
             </nav>
 
             <div class="admin-area-switcher">
-                <strong>A</strong>
-                <span>Assets</span>
+                <strong>C</strong>
+                <span>Crochet Bloom</span>
             </div>
         </aside>
 
