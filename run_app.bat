@@ -16,7 +16,7 @@ for /f "tokens=2 delims=:" %%I in ('ipconfig ^| findstr /R /C:"IPv4"') do (
 if defined LOCAL_IP set "LOCAL_IP=%LOCAL_IP: =%"
 
 echo.
-echo Crochet Bloom local server
+echo Minn Miru Handcrafted local server
 echo Computer: http://127.0.0.1:%PORT%
 if defined LOCAL_IP echo Phone:    http://%LOCAL_IP%:%PORT%
 echo.

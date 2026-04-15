@@ -21,6 +21,13 @@
             {% for image in product.images %}
             <div class="thumb-card">
                 <img src="{{ url_for('static', filename=image.image_path) }}" alt="{{ product.title }}" class="{% if image.is_main %}main{% endif %}">
+                <button
+                    type="button"
+                    class="mini-action"
+                    data-existing-image-edit
+                    data-image-src="{{ url_for('static', filename=image.image_path) }}"
+                    data-save-url="{{ url_for('main.edit_product_image', product_id=product.id, image_id=image.id) }}"
+                >Edit View</button>
                 <form method="POST" action="{{ url_for('main.delete_product_image', product_id=product.id, image_id=image.id) }}" onsubmit="return confirm('Delete this image?');">
                     <button type="submit" class="mini-action">Delete</button>
                 </form>
@@ -49,12 +56,15 @@
             </div>
 
             {% if product.images %}
-            <fieldset class="radio-group">
+            <fieldset class="radio-group main-image-picker">
                 <legend>Main Image</legend>
                 {% for image in product.images %}
-                <label class="small-label">
+                <label class="main-image-option">
                     <input type="radio" name="main_image_id" value="{{ image.id }}" {% if image.is_main %}checked{% endif %}>
-                    Image {{ loop.index }}
+                    <span class="main-image-choice">
+                        <img src="{{ url_for('static', filename=image.image_path) }}" alt="{{ product.title }} image {{ loop.index }}">
+                        <span>{% if image.is_main %}Current cover{% else %}Use as cover{% endif %}</span>
+                    </span>
                 </label>
                 {% endfor %}
             </fieldset>
@@ -62,7 +72,8 @@
 
             <label>
                 Add More Images
-                <input type="file" name="images" id="newImagesInput" multiple accept=".png,.jpg,.jpeg,.gif,.webp">
+                <input type="file" name="images" id="newImagesInput" multiple accept=".png,.jpg,.jpeg,.gif,.webp" {% if product.images|length >= 10 %}disabled{% endif %}>
+                <span class="form-hint">{{ 10 - product.images|length }} image slot{% if 10 - product.images|length != 1 %}s{% endif %} remaining. Maximum is 10 per product.</span>
             </label>
 
             <div id="newImagePreview" class="preview-grid"></div>
@@ -79,29 +90,13 @@
     </section>
 </section>
 
+<script src="{{ url_for('static', filename='js/image-cropper.js') }}"></script>
 <script>
-    const newImagesInput = document.getElementById("newImagesInput");
-    const newImagePreview = document.getElementById("newImagePreview");
-
-    if (newImagesInput && newImagePreview) {
-        newImagesInput.addEventListener("change", function () {
-            newImagePreview.innerHTML = "";
-            Array.from(this.files).forEach((file) => {
-                if (!file.type.startsWith("image/")) return;
-
-                const reader = new FileReader();
-                reader.onload = function (event) {
-                    const card = document.createElement("div");
-                    card.className = "preview-card";
-                    card.innerHTML = `
-                        <img src="${event.target.result}" alt="${file.name}">
-                        <p>${file.name}</p>
-                    `;
-                    newImagePreview.appendChild(card);
-                };
-                reader.readAsDataURL(file);
-            });
-        });
-    }
+    setupImageCropper({
+        inputId: "newImagesInput",
+        previewId: "newImagePreview",
+        maxFiles: {{ 10 - product.images|length }}
+    });
+    setupExistingImageEditors();
 </script>
 {% endblock %}

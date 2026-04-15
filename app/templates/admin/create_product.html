@@ -31,6 +31,7 @@
         <label>
             Product Images
             <input type="file" name="images" id="imagesInput" multiple accept=".png,.jpg,.jpeg,.gif,.webp">
+            <span class="form-hint">Upload up to 10 images per product.</span>
         </label>
 
         <div id="imagePreview" class="preview-grid"></div>
@@ -42,29 +43,12 @@
     </form>
 </section>
 
+<script src="{{ url_for('static', filename='js/image-cropper.js') }}"></script>
 <script>
-    const imagesInput = document.getElementById("imagesInput");
-    const imagePreview = document.getElementById("imagePreview");
-
-    if (imagesInput && imagePreview) {
-        imagesInput.addEventListener("change", function () {
-            imagePreview.innerHTML = "";
-            Array.from(this.files).forEach((file) => {
-                if (!file.type.startsWith("image/")) return;
-
-                const reader = new FileReader();
-                reader.onload = function (event) {
-                    const card = document.createElement("div");
-                    card.className = "preview-card";
-                    card.innerHTML = `
-                        <img src="${event.target.result}" alt="${file.name}">
-                        <p>${file.name}</p>
-                    `;
-                    imagePreview.appendChild(card);
-                };
-                reader.readAsDataURL(file);
-            });
-        });
-    }
+    setupImageCropper({
+        inputId: "imagesInput",
+        previewId: "imagePreview",
+        maxFiles: 10
+    });
 </script>
 {% endblock %}

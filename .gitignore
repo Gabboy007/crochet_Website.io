@@ -3,4 +3,5 @@ __pycache__/
 *.pyc
 *.log
 instance/*.db
+instance/*.json
 app/static/uploads/*

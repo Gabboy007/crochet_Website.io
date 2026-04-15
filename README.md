@@ -1,6 +1,6 @@
-# Crochet Bloom
+# Minn Miru Handcrafted
 
-Flask storefront and admin dashboard for Crochet Bloom.
+Flask storefront and admin dashboard for Minn Miru Handcrafted.
 
 ## Local Development
 
@@ -32,6 +32,13 @@ Important environment variables:
 - `SECRET_KEY`
 - `ADMIN_USERNAME`
 - `ADMIN_PASSWORD`
+- `CONTACT_EMAIL`
+- `SMTP_HOST`
+- `SMTP_PORT`
+- `SMTP_USERNAME`
+- `SMTP_PASSWORD`
+- `SMTP_USE_TLS`
+- `SMTP_SENDER`
 - `DATABASE_URL`
 - `HOST`
 - `PORT`
@@ -52,7 +59,20 @@ FLASK_DEBUG=0
 TRUST_PROXY=1
 SESSION_COOKIE_SECURE=1
 PORT=8080
+CONTACT_EMAIL=hello@crochetbloom.com
+SMTP_HOST=smtp.gmail.com
+SMTP_PORT=587
+SMTP_USERNAME=your-email@gmail.com
+SMTP_PASSWORD=your-app-password
+SMTP_USE_TLS=1
+SMTP_SENDER=your-email@gmail.com
 ```
+
+## Custom Order Email
+
+The custom order form posts to this Flask app at `/custom-order`. To send real emails, set the SMTP environment variables above. For Gmail, use an app password instead of your normal account password.
+
+You can also configure email from the admin dashboard at `/admin/settings`. Dashboard-saved email settings are stored locally in `instance/site_settings.json`, which is ignored by Git so app passwords are not uploaded.
 
 ## Run In Production
 

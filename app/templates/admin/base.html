@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{% block admin_title %}Admin{% endblock %} | Crochet Bloom</title>
+    <title>{% block admin_title %}Admin{% endblock %} | Minn Miru Handcrafted</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
@@ -13,8 +13,8 @@
     <div class="admin-workspace hybrid-admin">
         <aside class="admin-sidebar" aria-label="Admin navigation">
             <div class="admin-sidebar-brand">
-                <strong>CB</strong>
-                <span>Crochet Bloom</span>
+                <strong>MM</strong>
+                <span>Minn Miru</span>
             </div>
 
             <nav class="admin-nav">
@@ -24,6 +24,9 @@
                 </a>
                 <a href="{{ url_for('main.reviews_dashboard') }}" class="{% if request.endpoint == 'main.reviews_dashboard' %}active{% endif %}">
                     <span>R</span> Reviews
+                </a>
+                <a href="{{ url_for('main.admin_settings') }}" class="{% if request.endpoint == 'main.admin_settings' %}active{% endif %}">
+                    <span>S</span> Settings
                 </a>
 
                 <p class="admin-nav-title">Account</p>
@@ -40,7 +43,7 @@
         <main class="admin-shell">
             <section class="admin-hero">
                 <div class="admin-hero-copy">
-                    <p class="admin-eyebrow">Crochet Bloom Admin</p>
+                    <p class="admin-eyebrow">Minn Miru Admin</p>
                     <h1>{% block admin_heading %}Admin{% endblock %}</h1>
                     <p>{% block admin_subtitle %}{% endblock %}</p>
                 </div>

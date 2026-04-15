@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Crochet Bloom</title>
+  <title>Minn Miru Handcrafted</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
@@ -16,9 +16,9 @@
   <div class="bg-orb orb-3"></div>
   <header class="site-header glass">
     <div class="container nav-wrap">
-      <a class="brand" href="#home" aria-label="Crochet Bloom home">
-        <div class="brand-mark">CB</div>
-        <div><h1>Crochet Bloom</h1><p>Soft handmade pieces with modern charm</p></div>
+      <a class="brand" href="#home" aria-label="Minn Miru Handcrafted home">
+        <div class="brand-mark">MM</div>
+        <div><h1>Minn Miru Handcrafted</h1><p>Soft handmade pieces with modern charm</p></div>
       </a>
       <button class="menu-toggle" id="menuToggle" aria-label="Open menu" aria-expanded="false"><span></span><span></span><span></span></button>
       <nav class="nav glass" id="mobileNav">
@@ -33,6 +33,15 @@
       </div>
     </div>
   </header>
+  {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+    <section class="site-flash-stack container" aria-live="polite">
+      {% for category, message in messages %}
+      <div class="flash-message flash-{{ category }}">{{ message }}</div>
+      {% endfor %}
+    </section>
+    {% endif %}
+  {% endwith %}
   <main>
     <section id="home" class="hero container">
       <div class="hero-text reveal">
@@ -71,8 +80,13 @@
         <article class="product-card glass reveal {% if loop.index > 3 %}hidden-product{% endif %}">
           <div class="product-slideshow" data-slideshow>
             {% if product.images %}
+              {% if product.main_image %}
+              <img src="{{ url_for('static', filename=product.main_image.image_path) }}" alt="{{ product.title }}" class="product-img slide active">
+              {% endif %}
               {% for image in product.images %}
-              <img src="{{ url_for('static', filename=image.image_path) }}" alt="{{ product.title }}" class="product-img slide {% if loop.first %}active{% endif %}">
+                {% if not product.main_image or image.id != product.main_image.id %}
+                <img src="{{ url_for('static', filename=image.image_path) }}" alt="{{ product.title }}" class="product-img slide {% if not product.main_image and loop.first %}active{% endif %}">
+                {% endif %}
               {% endfor %}
               {% if product.images|length > 1 %}
               <button type="button" class="slide-btn prev" data-prev aria-label="Previous image"><i class="fa-solid fa-chevron-left"></i></button>
@@ -106,7 +120,7 @@
       <div class="about-copy reveal">
         <span class="section-label">About The Brand</span>
         <h2>Crafted with softness, detail, and personality</h2>
-        <p>Crochet Bloom is for people who love thoughtful handmade art. Every piece is made with care, balanced color, and a playful-but-premium presentation.</p>
+        <p>Minn Miru Handcrafted is for people who love thoughtful handmade art. Every piece is made with care, balanced color, and a playful-but-premium presentation.</p>
         <ul class="feature-list">
           <li>Custom colors for special requests</li>
           <li>Perfect for gifting and events</li>
@@ -175,10 +189,10 @@
   </main>
   <footer id="contact" class="site-footer">
     <div class="container footer-grid">
-      <div><h3>Crochet Bloom</h3><p>Handmade crochet pieces designed with softness and modern charm.</p></div>
+      <div><h3>Minn Miru Handcrafted</h3><p>Handmade crochet pieces designed with softness and modern charm.</p></div>
       <div>
         <h4>Contact</h4>
-        <p class="footer-email">hello@crochetbloom.com</p>
+        <p><a class="footer-email" href="mailto:hello@crochetbloom.com?subject=Custom%20Crochet%20Order">hello@crochetbloom.com</a></p>
         <div class="social-icons">
           <a href="#" target="_blank" aria-label="Instagram"><i class="fa-brands fa-instagram"></i></a>
           <a href="#" target="_blank" aria-label="Facebook"><i class="fa-brands fa-facebook-f"></i></a>
@@ -199,21 +213,28 @@
     <div class="modal-content glass">
       <button class="close-btn" id="closeModalBtn" aria-label="Close form">X</button>
       <h2>Custom Crochet Order</h2>
-      <p class="form-subtitle">Tell us your dream crochet idea.</p>
-      <form action="https://formspree.io/f/mojkklwy" method="POST">
-        <label>Your Name<input type="text" name="name" required></label>
-        <label>Your Email<input type="email" name="email" required></label>
+      <p class="form-subtitle">Tell us your dream crochet idea and we will reply by email.</p>
+      <form action="{{ url_for('main.custom_order') }}" method="POST" enctype="multipart/form-data">
+        <label>Your Name<input type="text" name="name" placeholder="Your full name" autocomplete="name" required></label>
+        <label>Your Email<input type="email" name="email" placeholder="you@example.com" autocomplete="email" required></label>
         <label>Product Type
           <select name="product">
             <option>Bouquet</option><option>Plush</option><option>Bag</option><option>Keychain</option><option>Other</option>
           </select>
         </label>
         <label>Preferred Colors<input type="text" name="colors" placeholder="Pink, Lavender, Mint"></label>
-        <label>Custom Details<textarea name="message" rows="4" placeholder="Describe your crochet idea"></textarea></label>
+        <label>Custom Details<textarea name="message" rows="4" placeholder="Size, color, deadline, budget, or reference idea"></textarea></label>
+        <label>Reference Picture
+          <input type="file" name="reference_image" accept=".png,.jpg,.jpeg,.gif,.webp,image/*">
+          <span class="form-hint">Optional. Add a picture so we can understand your idea.</span>
+        </label>
         <button type="submit" class="btn btn-primary submit-btn">Send Request</button>
       </form>
     </div>
   </div>
+  <a href="#" class="floating-facebook" target="_blank" rel="noopener" aria-label="Open Minn Miru Handcrafted on Facebook">
+    <i class="fa-brands fa-facebook-f"></i>
+  </a>
   <script src="{{ url_for('static', filename='js/main.js') }}"></script>
 </body>
 </html>

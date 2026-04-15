@@ -1,14 +1,22 @@
 from functools import wraps
 
-from flask import Blueprint, current_app, flash, redirect, render_template, request, session, url_for
+from flask import Blueprint, current_app, flash, jsonify, redirect, render_template, request, session, url_for
 
 from app import db
 from app.models import Product, ProductImage, Review, ReviewImage
-from app.utils import delete_uploaded_file, save_uploaded_file
+from app.utils import (
+    delete_uploaded_file,
+    email_settings_from_config,
+    load_site_settings,
+    save_site_settings,
+    save_uploaded_file,
+    send_custom_order_email,
+)
 
 main = Blueprint("main", __name__)
 
 DEFAULT_REVIEW_SCORE = "\u2605\u2605\u2605\u2605\u2605"
+MAX_PRODUCT_IMAGES = 10
 
 
 def admin_required(view_func):
@@ -22,11 +30,85 @@ def admin_required(view_func):
     return wrapped_view
 
 
+def valid_uploaded_images(files):
+    return [file for file in files if file and file.filename]
+
+
 @main.route("/")
 def index():
     products = Product.query.order_by(Product.sort_order.asc(), Product.id.asc()).all()
     reviews = Review.query.order_by(Review.sort_order.asc(), Review.id.asc()).all()
     return render_template("index.html", products=products, reviews=reviews)
+
+
+@main.route("/custom-order", methods=["POST"])
+def custom_order():
+    order_data = {
+        "name": request.form.get("name", "").strip(),
+        "email": request.form.get("email", "").strip(),
+        "product": request.form.get("product", "").strip(),
+        "colors": request.form.get("colors", "").strip(),
+        "message": request.form.get("message", "").strip(),
+        "reference_image": request.files.get("reference_image"),
+    }
+
+    if not order_data["name"] or not order_data["email"] or not order_data["product"]:
+        flash("Please add your name, email, and product type before sending.", "error")
+        return redirect(url_for("main.index", _anchor="contact"))
+
+    try:
+        email_settings = email_settings_from_config(current_app.config, current_app.instance_path)
+        send_custom_order_email(email_settings, order_data)
+    except RuntimeError as error:
+        current_app.logger.warning("Custom order email was not sent: %s", error)
+        flash("Email is not configured yet. Please email us directly for now.", "error")
+        return redirect(url_for("main.index", _anchor="contact"))
+    except Exception:
+        current_app.logger.exception("Failed to send custom order email.")
+        flash("We could not send your request yet. Please email us directly for now.", "error")
+        return redirect(url_for("main.index", _anchor="contact"))
+
+    flash("Your custom order request was sent. We will reply by email soon.", "success")
+    return redirect(url_for("main.index", _anchor="contact"))
+
+
+@main.route("/admin/settings", methods=["GET", "POST"])
+@admin_required
+def admin_settings():
+    saved_settings = load_site_settings(current_app.instance_path)
+    settings = email_settings_from_config(current_app.config, current_app.instance_path)
+
+    if request.method == "POST":
+        smtp_password = request.form.get("smtp_password", "").strip()
+        if not smtp_password:
+            smtp_password = saved_settings.get("SMTP_PASSWORD") or current_app.config.get("SMTP_PASSWORD")
+
+        settings_to_save = {
+            "CONTACT_EMAIL": request.form.get("contact_email", "").strip(),
+            "SMTP_HOST": request.form.get("smtp_host", "").strip(),
+            "SMTP_PORT": request.form.get("smtp_port", "").strip() or "587",
+            "SMTP_USERNAME": request.form.get("smtp_username", "").strip(),
+            "SMTP_PASSWORD": smtp_password,
+            "SMTP_USE_TLS": "1" if request.form.get("smtp_use_tls") else "0",
+            "SMTP_SENDER": request.form.get("smtp_sender", "").strip(),
+        }
+
+        required = ["CONTACT_EMAIL", "SMTP_HOST", "SMTP_PORT", "SMTP_USERNAME", "SMTP_PASSWORD"]
+        if not all(settings_to_save.get(key) for key in required):
+            flash("Please fill in contact email, SMTP host, port, username, and password.", "error")
+            return redirect(url_for("main.admin_settings"))
+
+        try:
+            int(settings_to_save["SMTP_PORT"])
+        except ValueError:
+            flash("SMTP port must be a number.", "error")
+            return redirect(url_for("main.admin_settings"))
+
+        save_site_settings(current_app.instance_path, settings_to_save)
+        flash("Email settings saved.", "success")
+        return redirect(url_for("main.admin_settings"))
+
+    return render_template("admin/settings.html", settings=settings, has_saved_password=bool(settings.get("SMTP_PASSWORD")))
 
 
 @main.route("/admin/login", methods=["GET", "POST"])
@@ -98,6 +180,11 @@ def create_product():
                 flash("Price must be a valid number.", "error")
                 return redirect(url_for("main.create_product"))
 
+        uploaded_files = valid_uploaded_images(request.files.getlist("images"))
+        if len(uploaded_files) > MAX_PRODUCT_IMAGES:
+            flash(f"Products can have up to {MAX_PRODUCT_IMAGES} images only.", "error")
+            return redirect(url_for("main.create_product"))
+
         max_sort_order = db.session.query(db.func.max(Product.sort_order)).scalar()
         next_sort_order = (max_sort_order or 0) + 1
 
@@ -111,7 +198,6 @@ def create_product():
         db.session.add(product)
         db.session.commit()
 
-        uploaded_files = request.files.getlist("images")
         saved_count = 0
 
         for index, file in enumerate(uploaded_files, start=1):
@@ -173,7 +259,12 @@ def update_product(product_id):
         for image in product.images:
             image.is_main = str(image.id) == str(main_image_id)
 
-    uploaded_files = request.files.getlist("images")
+    uploaded_files = valid_uploaded_images(request.files.getlist("images"))
+    if len(product.images) + len(uploaded_files) > MAX_PRODUCT_IMAGES:
+        remaining_slots = MAX_PRODUCT_IMAGES - len(product.images)
+        flash(f"This product can only add {remaining_slots} more image(s). Maximum is {MAX_PRODUCT_IMAGES}.", "error")
+        return redirect(url_for("main.edit_product", product_id=product.id))
+
     next_image_sort = len(product.images) + 1
 
     for file in uploaded_files:
@@ -228,6 +319,28 @@ def delete_product_image(product_id, image_id):
 
     flash("Product image deleted successfully.", "success")
     return redirect(url_for("main.edit_product", product_id=product.id))
+
+
+@main.route("/admin/products/<int:product_id>/images/<int:image_id>/edit", methods=["POST"])
+@admin_required
+def edit_product_image(product_id, image_id):
+    product = Product.query.get_or_404(product_id)
+    image = ProductImage.query.filter_by(id=image_id, product_id=product.id).first_or_404()
+    uploaded_file = request.files.get("image")
+
+    if not uploaded_file or not uploaded_file.filename:
+        return jsonify({"error": "No image was uploaded."}), 400
+
+    old_path = image.image_path
+    saved_path = save_uploaded_file(uploaded_file, current_app.config["UPLOAD_FOLDER"])
+    if not saved_path:
+        return jsonify({"error": "Image type is not supported."}), 400
+
+    image.image_path = saved_path
+    db.session.commit()
+    delete_uploaded_file(old_path, current_app.static_folder)
+
+    return jsonify({"image_path": saved_path})
 
 
 @main.route("/admin/reviews")
