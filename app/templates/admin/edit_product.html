@@ -1,296 +1,107 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Edit Product</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
-    <style>
-        .admin-wrapper {
-            width: min(1100px, calc(100% - 24px));
-            margin: 40px auto;
-            background: rgba(255, 255, 255, 0.92);
-            border-radius: 24px;
-            padding: 28px;
-            box-shadow: 0 20px 60px rgba(180, 150, 205, 0.16);
-        }
+{% extends "admin/base.html" %}
 
-        .flash-message {
-            padding: 12px 16px;
-            border-radius: 14px;
-            margin-bottom: 16px;
-            font-weight: 500;
-        }
+{% block admin_title %}Edit Product{% endblock %}
+{% block admin_heading %}Edit Product{% endblock %}
+{% block admin_subtitle %}Update details, switch the cover image, and keep the gallery tidy.{% endblock %}
 
-        .flash-success {
-            background: #e8f8ef;
-            color: #246b45;
-        }
+{% block admin_actions %}
+<a href="{{ url_for('main.admin_dashboard') }}" class="btn btn-secondary">Back to Products</a>
+{% endblock %}
 
-        .flash-error {
-            background: #ffeaea;
-            color: #8a2d2d;
-        }
+{% block admin_content %}
+<section class="editor-grid">
+    <aside class="editor-sidebar">
+        {% if product.main_image %}
+        <img class="main-thumb" src="{{ url_for('static', filename=product.main_image.image_path) }}" alt="{{ product.title }}">
+        {% else %}
+        <img class="main-thumb" src="{{ url_for('static', filename='images/product1.jpg') }}" alt="No image">
+        {% endif %}
 
-        .edit-grid {
-            display: grid;
-            grid-template-columns: 260px 1fr;
-            gap: 24px;
-            align-items: start;
-        }
-
-        .main-thumb {
-            width: 100%;
-            aspect-ratio: 1 / 1;
-            object-fit: contain;
-            background: #fff;
-            border-radius: 18px;
-            padding: 8px;
-            border: 1px solid rgba(180, 155, 200, 0.22);
-        }
-
-        .all-images {
-            display: flex;
-            gap: 10px;
-            flex-wrap: wrap;
-            margin-top: 14px;
-        }
-
-        .image-box {
-            width: 90px;
-        }
-
-        .image-box img {
-            width: 90px;
-            height: 90px;
-            object-fit: cover;
-            border-radius: 12px;
-            border: 2px solid transparent;
-            display: block;
-            margin-bottom: 6px;
-        }
-
-        .image-box img.main {
-            border-color: #ceb7f4;
-        }
-
-        .small-label {
-            display: flex !important;
-            align-items: center;
-            gap: 6px;
-            font-size: 0.82rem;
-            color: #7d7391;
-            margin-bottom: 6px;
-        }
-
-        .mini-delete-form {
-            margin: 0;
-        }
-
-        .mini-delete-form button {
-            width: 100%;
-            padding: 8px 10px;
-            border-radius: 10px;
-            background: #f6f1fb;
-            color: #433a57;
-            border: none;
-            cursor: pointer;
-        }
-
-        .admin-form {
-            display: grid;
-            gap: 14px;
-        }
-
-        .admin-form label {
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
-            color: #433a57;
-            font-weight: 500;
-        }
-
-        .admin-form input,
-        .admin-form textarea {
-            padding: 12px 14px;
-            border-radius: 14px;
-            border: 1px solid rgba(180, 155, 200, 0.22);
-            font: inherit;
-            background: #fff;
-        }
-
-        .admin-form textarea {
-            min-height: 120px;
-            resize: vertical;
-        }
-
-        .form-row {
-            display: grid;
-            grid-template-columns: 1fr 220px;
-            gap: 14px;
-        }
-
-        .preview-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
-            gap: 12px;
-            margin-top: 8px;
-        }
-
-        .preview-card {
-            border: 1px solid rgba(180, 155, 200, 0.22);
-            border-radius: 16px;
-            overflow: hidden;
-            background: #fff;
-        }
-
-        .preview-card img {
-            width: 100%;
-            height: 130px;
-            object-fit: cover;
-            display: block;
-        }
-
-        .preview-card p {
-            padding: 8px 10px;
-            font-size: 0.85rem;
-            color: #7d7391;
-            word-break: break-word;
-        }
-
-        .form-actions {
-            display: flex;
-            gap: 10px;
-            flex-wrap: wrap;
-        }
-
-        @media (max-width: 900px) {
-            .edit-grid,
-            .form-row {
-                grid-template-columns: 1fr;
-            }
-        }
-    </style>
-</head>
-<body>
-    <div class="admin-wrapper">
-        <h1>Edit Product</h1>
-
-        {% with messages = get_flashed_messages(with_categories=true) %}
-            {% if messages %}
-                {% for category, message in messages %}
-                    <div class="flash-message {% if category == 'success' %}flash-success{% else %}flash-error{% endif %}">
-                        {{ message }}
-                    </div>
-                {% endfor %}
-            {% endif %}
-        {% endwith %}
-
-        <div class="edit-grid">
-            <div>
-                {% if product.main_image %}
-                    <img class="main-thumb" src="{{ url_for('static', filename=product.main_image.image_path) }}" alt="{{ product.title }}">
-                {% else %}
-                    <img class="main-thumb" src="{{ url_for('static', filename='images/product1.jpg') }}" alt="No image">
-                {% endif %}
-
-                <div class="all-images">
-                    {% for image in product.images %}
-                        <div class="image-box">
-                            <img
-                                src="{{ url_for('static', filename=image.image_path) }}"
-                                alt="{{ product.title }}"
-                                class="{% if image.is_main %}main{% endif %}"
-                            >
-                            <form class="mini-delete-form" method="POST" action="{{ url_for('main.delete_product_image', product_id=product.id, image_id=image.id) }}" onsubmit="return confirm('Delete this image?');">
-                                <button type="submit">Delete</button>
-                            </form>
-                        </div>
-                    {% endfor %}
-                </div>
-            </div>
-
-            <div>
-                <form class="admin-form" method="POST" enctype="multipart/form-data" action="{{ url_for('main.update_product', product_id=product.id) }}">
-                    <label>
-                        Title
-                        <input type="text" name="title" value="{{ product.title }}" required>
-                    </label>
-
-                    <div class="form-row">
-                        <label>
-                            Description
-                            <textarea name="description">{{ product.description or '' }}</textarea>
-                        </label>
-
-                        <label>
-                            Price
-                            <input type="number" step="0.01" min="0" name="price" value="{{ product.price if product.price is not none else '' }}" placeholder="₱ 0.00">
-                        </label>
-                    </div>
-
-                    {% if product.images %}
-                    <label>
-                        Main Image
-                        <div>
-                            {% for image in product.images %}
-                                <label class="small-label">
-                                    <input type="radio" name="main_image_id" value="{{ image.id }}" {% if image.is_main %}checked{% endif %}>
-                                    Image {{ loop.index }}
-                                </label>
-                            {% endfor %}
-                        </div>
-                    </label>
-                    {% endif %}
-
-                    <label>
-                        Add More Images
-                        <input type="file" name="images" id="newImagesInput" multiple accept=".png,.jpg,.jpeg,.gif,.webp">
-                    </label>
-
-                    <div id="newImagePreview" class="preview-grid"></div>
-
-                    <div class="form-actions">
-                        <button type="submit" class="btn btn-primary">Save Changes</button>
-                        <a href="{{ url_for('main.admin_dashboard') }}" class="btn btn-secondary">Back</a>
-                    </div>
+        <div class="thumb-gallery">
+            {% for image in product.images %}
+            <div class="thumb-card">
+                <img src="{{ url_for('static', filename=image.image_path) }}" alt="{{ product.title }}" class="{% if image.is_main %}main{% endif %}">
+                <form method="POST" action="{{ url_for('main.delete_product_image', product_id=product.id, image_id=image.id) }}" onsubmit="return confirm('Delete this image?');">
+                    <button type="submit" class="mini-action">Delete</button>
                 </form>
-
-                <div class="form-actions" style="margin-top: 12px;">
-                    <form method="POST" action="{{ url_for('main.delete_product', product_id=product.id) }}" onsubmit="return confirm('Delete this product and all its images?');">
-                        <button type="submit" class="btn btn-primary">Delete Product</button>
-                    </form>
-                </div>
             </div>
+            {% endfor %}
         </div>
-    </div>
+    </aside>
 
-    <script>
-        const newImagesInput = document.getElementById("newImagesInput");
-        const newImagePreview = document.getElementById("newImagePreview");
+    <section class="admin-form-shell">
+        <form class="admin-form" method="POST" enctype="multipart/form-data" action="{{ url_for('main.update_product', product_id=product.id) }}">
+            <label>
+                Title
+                <input type="text" name="title" value="{{ product.title }}" required>
+            </label>
 
-        if (newImagesInput && newImagePreview) {
-            newImagesInput.addEventListener("change", function () {
-                newImagePreview.innerHTML = "";
-                const files = Array.from(this.files);
+            <div class="form-row">
+                <label>
+                    Description
+                    <textarea name="description">{{ product.description or '' }}</textarea>
+                </label>
 
-                files.forEach((file) => {
-                    if (!file.type.startsWith("image/")) return;
+                <label>
+                    Price
+                    <input type="number" step="0.01" min="0" name="price" value="{{ product.price if product.price is not none else '' }}" placeholder="PHP 0.00">
+                </label>
+            </div>
 
-                    const reader = new FileReader();
-                    reader.onload = function (e) {
-                        const card = document.createElement("div");
-                        card.className = "preview-card";
-                        card.innerHTML = `
-                            <img src="${e.target.result}" alt="${file.name}">
-                            <p>${file.name}</p>
-                        `;
-                        newImagePreview.appendChild(card);
-                    };
-                    reader.readAsDataURL(file);
-                });
+            {% if product.images %}
+            <fieldset class="radio-group">
+                <legend>Main Image</legend>
+                {% for image in product.images %}
+                <label class="small-label">
+                    <input type="radio" name="main_image_id" value="{{ image.id }}" {% if image.is_main %}checked{% endif %}>
+                    Image {{ loop.index }}
+                </label>
+                {% endfor %}
+            </fieldset>
+            {% endif %}
+
+            <label>
+                Add More Images
+                <input type="file" name="images" id="newImagesInput" multiple accept=".png,.jpg,.jpeg,.gif,.webp">
+            </label>
+
+            <div id="newImagePreview" class="preview-grid"></div>
+
+            <div class="form-actions">
+                <button type="submit" class="btn btn-primary">Save Changes</button>
+                <a href="{{ url_for('main.admin_dashboard') }}" class="btn btn-secondary">Cancel</a>
+            </div>
+        </form>
+
+        <form method="POST" action="{{ url_for('main.delete_product', product_id=product.id) }}" onsubmit="return confirm('Delete this product and all its images?');">
+            <button type="submit" class="btn btn-danger">Delete Product</button>
+        </form>
+    </section>
+</section>
+
+<script>
+    const newImagesInput = document.getElementById("newImagesInput");
+    const newImagePreview = document.getElementById("newImagePreview");
+
+    if (newImagesInput && newImagePreview) {
+        newImagesInput.addEventListener("change", function () {
+            newImagePreview.innerHTML = "";
+            Array.from(this.files).forEach((file) => {
+                if (!file.type.startsWith("image/")) return;
+
+                const reader = new FileReader();
+                reader.onload = function (event) {
+                    const card = document.createElement("div");
+                    card.className = "preview-card";
+                    card.innerHTML = `
+                        <img src="${event.target.result}" alt="${file.name}">
+                        <p>${file.name}</p>
+                    `;
+                    newImagePreview.appendChild(card);
+                };
+                reader.readAsDataURL(file);
             });
-        }
-    </script>
-</body>
-</html>
+        });
+    }
+</script>
+{% endblock %}

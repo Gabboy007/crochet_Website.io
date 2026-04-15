@@ -1,9 +1,25 @@
-from flask import Blueprint, render_template, request, redirect, url_for, flash, current_app
+from functools import wraps
+
+from flask import Blueprint, current_app, flash, redirect, render_template, request, session, url_for
+
 from app import db
 from app.models import Product, ProductImage, Review, ReviewImage
-from app.utils import save_uploaded_file, delete_uploaded_file
+from app.utils import delete_uploaded_file, save_uploaded_file
 
 main = Blueprint("main", __name__)
+
+DEFAULT_REVIEW_SCORE = "\u2605\u2605\u2605\u2605\u2605"
+
+
+def admin_required(view_func):
+    @wraps(view_func)
+    def wrapped_view(*args, **kwargs):
+        if not session.get("admin_authenticated"):
+            flash("Please log in to access the admin area.", "error")
+            return redirect(url_for("main.admin_login", next=request.path))
+        return view_func(*args, **kwargs)
+
+    return wrapped_view
 
 
 @main.route("/")
@@ -13,13 +29,51 @@ def index():
     return render_template("index.html", products=products, reviews=reviews)
 
 
+@main.route("/admin/login", methods=["GET", "POST"])
+def admin_login():
+    if session.get("admin_authenticated"):
+        return redirect(url_for("main.admin_dashboard"))
+
+    next_url = request.args.get("next") or request.form.get("next") or url_for("main.admin_dashboard")
+    if not next_url.startswith("/"):
+        next_url = url_for("main.admin_dashboard")
+
+    if request.method == "POST":
+        username = request.form.get("username", "").strip()
+        password = request.form.get("password", "")
+
+        if (
+            username == current_app.config["ADMIN_USERNAME"]
+            and password == current_app.config["ADMIN_PASSWORD"]
+        ):
+            session["admin_authenticated"] = True
+            session["admin_username"] = username
+            flash("Welcome back. You are now logged in.", "success")
+            return redirect(next_url)
+
+        flash("Invalid admin credentials.", "error")
+
+    return render_template("admin/login.html", next_url=next_url)
+
+
+@main.route("/admin/logout", methods=["POST"])
+@admin_required
+def admin_logout():
+    session.pop("admin_authenticated", None)
+    session.pop("admin_username", None)
+    flash("You have been logged out.", "success")
+    return redirect(url_for("main.admin_login"))
+
+
 @main.route("/admin")
+@admin_required
 def admin_dashboard():
     products = Product.query.order_by(Product.sort_order.asc(), Product.id.asc()).all()
     return render_template("admin/dashboard.html", products=products)
 
 
 @main.route("/admin/products/create", methods=["GET", "POST"])
+@admin_required
 def create_product():
     if request.method == "POST":
         title = request.form.get("title", "").strip()
@@ -45,7 +99,7 @@ def create_product():
             title=title,
             description=description,
             price=price,
-            sort_order=next_sort_order
+            sort_order=next_sort_order,
         )
 
         db.session.add(product)
@@ -63,7 +117,7 @@ def create_product():
                 image_path=saved_path,
                 is_main=(saved_count == 0),
                 sort_order=index,
-                product_id=product.id
+                product_id=product.id,
             )
             db.session.add(image)
             saved_count += 1
@@ -77,12 +131,14 @@ def create_product():
 
 
 @main.route("/admin/products/<int:product_id>/edit")
+@admin_required
 def edit_product(product_id):
     product = Product.query.get_or_404(product_id)
     return render_template("admin/edit_product.html", product=product)
 
 
 @main.route("/admin/products/<int:product_id>/update", methods=["POST"])
+@admin_required
 def update_product(product_id):
     product = Product.query.get_or_404(product_id)
 
@@ -123,7 +179,7 @@ def update_product(product_id):
             image_path=saved_path,
             is_main=False if product.images else True,
             sort_order=next_image_sort,
-            product_id=product.id
+            product_id=product.id,
         )
         db.session.add(image)
         next_image_sort += 1
@@ -134,6 +190,7 @@ def update_product(product_id):
 
 
 @main.route("/admin/products/<int:product_id>/delete", methods=["POST"])
+@admin_required
 def delete_product(product_id):
     product = Product.query.get_or_404(product_id)
 
@@ -148,6 +205,7 @@ def delete_product(product_id):
 
 
 @main.route("/admin/products/<int:product_id>/images/<int:image_id>/delete", methods=["POST"])
+@admin_required
 def delete_product_image(product_id, image_id):
     product = Product.query.get_or_404(product_id)
     image = ProductImage.query.filter_by(id=image_id, product_id=product.id).first_or_404()
@@ -167,19 +225,21 @@ def delete_product_image(product_id, image_id):
 
 
 @main.route("/admin/reviews")
+@admin_required
 def reviews_dashboard():
     reviews = Review.query.order_by(Review.sort_order.asc(), Review.id.asc()).all()
     return render_template("admin/reviews_dashboard.html", reviews=reviews)
 
 
 @main.route("/admin/reviews/create", methods=["GET", "POST"])
+@admin_required
 def create_review():
     if request.method == "POST":
         customer_name = request.form.get("customer_name", "").strip()
         title = request.form.get("title", "").strip()
         review_text = request.form.get("review_text", "").strip()
         badge = request.form.get("badge", "").strip()
-        score = request.form.get("score", "★★★★★").strip() or "★★★★★"
+        score = request.form.get("score", DEFAULT_REVIEW_SCORE).strip() or DEFAULT_REVIEW_SCORE
 
         if not customer_name or not title or not review_text:
             flash("Customer name, title, and review text are required.", "error")
@@ -194,7 +254,7 @@ def create_review():
             review_text=review_text,
             badge=badge if badge else None,
             score=score,
-            sort_order=next_sort_order
+            sort_order=next_sort_order,
         )
 
         db.session.add(review)
@@ -212,7 +272,7 @@ def create_review():
                 image_path=saved_path,
                 is_main=(saved_count == 0),
                 sort_order=index,
-                review_id=review.id
+                review_id=review.id,
             )
             db.session.add(image)
             saved_count += 1
@@ -222,7 +282,7 @@ def create_review():
                 image_path="images/review1.jpg",
                 is_main=True,
                 sort_order=1,
-                review_id=review.id
+                review_id=review.id,
             )
             db.session.add(default_image)
 
@@ -235,6 +295,7 @@ def create_review():
 
 
 @main.route("/admin/reviews/<int:review_id>/edit", methods=["GET", "POST"])
+@admin_required
 def edit_review(review_id):
     review = Review.query.get_or_404(review_id)
 
@@ -243,7 +304,7 @@ def edit_review(review_id):
         title = request.form.get("title", "").strip()
         review_text = request.form.get("review_text", "").strip()
         badge = request.form.get("badge", "").strip()
-        score = request.form.get("score", "★★★★★").strip() or "★★★★★"
+        score = request.form.get("score", DEFAULT_REVIEW_SCORE).strip() or DEFAULT_REVIEW_SCORE
         main_image_id = request.form.get("main_image_id")
 
         if not customer_name or not title or not review_text:
@@ -272,7 +333,7 @@ def edit_review(review_id):
                 image_path=saved_path,
                 is_main=False if review.images else True,
                 sort_order=next_image_sort,
-                review_id=review.id
+                review_id=review.id,
             )
             db.session.add(image)
             next_image_sort += 1
@@ -286,6 +347,7 @@ def edit_review(review_id):
 
 
 @main.route("/admin/reviews/<int:review_id>/delete", methods=["POST"])
+@admin_required
 def delete_review(review_id):
     review = Review.query.get_or_404(review_id)
 
@@ -300,6 +362,7 @@ def delete_review(review_id):
 
 
 @main.route("/admin/reviews/<int:review_id>/images/<int:image_id>/delete", methods=["POST"])
+@admin_required
 def delete_review_image(review_id, image_id):
     review = Review.query.get_or_404(review_id)
     image = ReviewImage.query.filter_by(id=image_id, review_id=review.id).first_or_404()

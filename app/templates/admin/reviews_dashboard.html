@@ -1,159 +1,65 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Reviews Dashboard</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
-    <style>
-        .admin-wrapper {
-            width: min(1100px, calc(100% - 24px));
-            margin: 40px auto;
-            background: rgba(255, 255, 255, 0.88);
-            border-radius: 24px;
-            padding: 24px;
-            box-shadow: 0 20px 60px rgba(180, 150, 205, 0.16);
-        }
+{% extends "admin/base.html" %}
 
-        .admin-topbar {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            gap: 16px;
-            flex-wrap: wrap;
-            margin-bottom: 20px;
-        }
+{% block admin_title %}Reviews Dashboard{% endblock %}
+{% block admin_heading %}Reviews Dashboard{% endblock %}
+{% block admin_subtitle %}Curate customer proof, badges, and images for the homepage review section.{% endblock %}
 
-        .admin-actions {
-            display: flex;
-            gap: 12px;
-            flex-wrap: wrap;
-        }
+{% block admin_actions %}
+<a href="{{ url_for('main.create_review') }}" class="btn btn-primary">Add Review</a>
+<a href="{{ url_for('main.admin_dashboard') }}" class="btn btn-secondary">Products</a>
+{% endblock %}
 
-        .admin-table {
-            width: 100%;
-            border-collapse: collapse;
-        }
-
-        .admin-table th,
-        .admin-table td {
-            text-align: left;
-            padding: 12px;
-            border-bottom: 1px solid #eee;
-            vertical-align: top;
-        }
-
-        .review-thumb {
-            width: 70px;
-            height: 70px;
-            object-fit: cover;
-            border-radius: 12px;
-        }
-
-        .muted {
-            color: #7d7391;
-        }
-
-        .action-stack {
-            display: flex;
-            gap: 8px;
-            flex-wrap: wrap;
-        }
-
-        .inline-form {
-            display: inline;
-        }
-
-        .flash-message {
-            padding: 12px 16px;
-            border-radius: 14px;
-            margin-bottom: 16px;
-            font-weight: 500;
-        }
-
-        .flash-success {
-            background: #e8f8ef;
-            color: #246b45;
-        }
-
-        .flash-error {
-            background: #ffeaea;
-            color: #8a2d2d;
-        }
-    </style>
-</head>
-<body>
-    <div class="admin-wrapper">
-        <div class="admin-topbar">
-            <div>
-                <h1>Reviews Dashboard</h1>
-                <p class="muted">Manage homepage review cards here.</p>
-            </div>
-
-            <div class="admin-actions">
-                <a href="{{ url_for('main.create_review') }}" class="btn btn-primary">Add Review</a>
-                <a href="{{ url_for('main.admin_dashboard') }}" class="btn btn-secondary">Products Dashboard</a>
-                <a href="{{ url_for('main.index') }}" class="btn btn-secondary">Back to Website</a>
-            </div>
+{% block admin_content %}
+{% if reviews %}
+<section class="admin-card-grid">
+    {% for review in reviews %}
+    <article class="admin-entity-card review-layout">
+        <div class="admin-entity-media">
+            <img
+                src="{{ url_for('static', filename=(review.main_image.image_path if review.main_image else 'images/review1.jpg')) }}"
+                alt="{{ review.title }}"
+            >
         </div>
 
-        {% with messages = get_flashed_messages(with_categories=true) %}
-            {% if messages %}
-                {% for category, message in messages %}
-                    <div class="flash-message {% if category == 'success' %}flash-success{% else %}flash-error{% endif %}">
-                        {{ message }}
-                    </div>
-                {% endfor %}
-            {% endif %}
-        {% endwith %}
+        <div class="admin-entity-content">
+            <div class="admin-entity-top">
+                <div>
+                    <p class="admin-eyebrow">{{ review.badge or "Customer Favorite" }}</p>
+                    <h2>{{ review.title }}</h2>
+                </div>
+                <span class="status-pill">{{ review.score }}</span>
+            </div>
 
-        <table class="admin-table">
-            <thead>
-                <tr>
-                    <th>ID</th>
-                    <th>Main Image</th>
-                    <th>Title</th>
-                    <th>Customer</th>
-                    <th>Badge</th>
-                    <th>Score</th>
-                    <th>Images</th>
-                    <th>Review</th>
-                    <th>Actions</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for review in reviews %}
-                <tr>
-                    <td>{{ review.id }}</td>
-                    <td>
-                        <img
-                            class="review-thumb"
-                            src="{{ url_for('static', filename=(review.main_image.image_path if review.main_image else 'images/review1.jpg')) }}"
-                            alt="{{ review.title }}"
-                        >
-                    </td>
-                    <td>{{ review.title }}</td>
-                    <td>{{ review.customer_name }}</td>
-                    <td>{{ review.badge or '-' }}</td>
-                    <td>{{ review.score }}</td>
-                    <td>{{ review.images|length }}</td>
-                    <td class="muted">{{ review.review_text }}</td>
-                    <td>
-                        <div class="action-stack">
-                            <a href="{{ url_for('main.edit_review', review_id=review.id) }}" class="btn btn-secondary">Edit</a>
-                            <form class="inline-form" action="{{ url_for('main.delete_review', review_id=review.id) }}" method="POST" onsubmit="return confirm('Delete this review?');">
-                                <button type="submit" class="btn btn-primary">Delete</button>
-                            </form>
-                        </div>
-                    </td>
-                </tr>
-                {% else %}
-                <tr>
-                    <td colspan="9">No reviews found.</td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
-    </div>
-</body>
-</html>
+            <p><strong>{{ review.customer_name }}</strong></p>
+            <p class="admin-muted">{{ review.review_text }}</p>
+
+            <div class="admin-stat-row">
+                <div>
+                    <span class="admin-stat-label">Images</span>
+                    <strong>{{ review.images|length }}</strong>
+                </div>
+                <div>
+                    <span class="admin-stat-label">Display order</span>
+                    <strong>{{ review.sort_order }}</strong>
+                </div>
+            </div>
+
+            <div class="admin-inline-actions">
+                <a href="{{ url_for('main.edit_review', review_id=review.id) }}" class="btn btn-secondary">Edit</a>
+                <form method="POST" action="{{ url_for('main.delete_review', review_id=review.id) }}" onsubmit="return confirm('Delete this review?');">
+                    <button type="submit" class="btn btn-danger">Delete</button>
+                </form>
+            </div>
+        </div>
+    </article>
+    {% endfor %}
+</section>
+{% else %}
+<section class="admin-empty-state">
+    <p class="admin-eyebrow">No reviews yet</p>
+    <h2>Show customer love</h2>
+    <p class="admin-muted">Add your first review card and it will appear on the homepage showcase.</p>
+    <a href="{{ url_for('main.create_review') }}" class="btn btn-primary">Create Review</a>
+</section>
+{% endif %}
+{% endblock %}

@@ -17,7 +17,7 @@ class Product(db.Model):
         backref="product",
         cascade="all, delete-orphan",
         lazy=True,
-        order_by="ProductImage.sort_order"
+        order_by="ProductImage.sort_order",
     )
 
     @property
@@ -47,7 +47,7 @@ class Review(db.Model):
     title = db.Column(db.String(200), nullable=False)
     review_text = db.Column(db.Text, nullable=False)
     badge = db.Column(db.String(100), nullable=True)
-    score = db.Column(db.String(20), default="★★★★★", nullable=False)
+    score = db.Column(db.String(20), default="\u2605\u2605\u2605\u2605\u2605", nullable=False)
     sort_order = db.Column(db.Integer, default=0, nullable=False)
 
     images = db.relationship(
@@ -55,7 +55,7 @@ class Review(db.Model):
         backref="review",
         cascade="all, delete-orphan",
         lazy=True,
-        order_by="ReviewImage.sort_order"
+        order_by="ReviewImage.sort_order",
     )
 
     @property

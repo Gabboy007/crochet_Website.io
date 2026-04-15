@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block admin_title %}Admin{% endblock %} | Crochet Bloom</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body class="admin-page">
+    <div class="bg-orb orb-1"></div>
+    <div class="bg-orb orb-2"></div>
+    <div class="bg-orb orb-3"></div>
+
+    <main class="admin-shell">
+        <section class="admin-hero glass">
+            <div>
+                <p class="admin-eyebrow">Crochet Bloom Admin</p>
+                <h1>{% block admin_heading %}Admin{% endblock %}</h1>
+                <p class="admin-muted">{% block admin_subtitle %}{% endblock %}</p>
+            </div>
+
+            <div class="admin-hero-actions">
+                {% block admin_actions %}{% endblock %}
+                <a href="{{ url_for('main.index') }}" class="btn btn-secondary">View Website</a>
+                <form method="POST" action="{{ url_for('main.admin_logout') }}">
+                    <button type="submit" class="btn btn-secondary">Log Out</button>
+                </form>
+            </div>
+        </section>
+
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                <section class="flash-stack">
+                    {% for category, message in messages %}
+                        <div class="flash-message flash-{{ category }}">{{ message }}</div>
+                    {% endfor %}
+                </section>
+            {% endif %}
+        {% endwith %}
+
+        {% block admin_content %}{% endblock %}
+    </main>
+</body>
+</html>
