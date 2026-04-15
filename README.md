@@ -17,6 +17,12 @@ pip install -r requirements.txt
 python run.py
 ```
 
+Or on Windows:
+
+```bat
+run_app.bat
+```
+
 ## Production Readiness
 
 This project now supports production-style deployment with environment variables.
@@ -60,6 +66,12 @@ Run with Waitress:
 
 ```bash
 python serve_prod.py
+```
+
+Or on Windows:
+
+```bat
+run_prod.bat
 ```
 
 ## Domain Setup
