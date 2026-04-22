@@ -1,4 +1,5 @@
 import os
+import html
 import json
 import mimetypes
 import smtplib
@@ -95,6 +96,89 @@ def email_settings_from_config(config, instance_path):
     return settings
 
 
+def build_custom_order_email_html(order_data):
+    name = html.escape(order_data["name"])
+    customer_email = html.escape(order_data["email"])
+    product = html.escape(order_data["product"])
+    colors = html.escape(order_data.get("colors") or "Not specified")
+    message = html.escape(order_data.get("message") or "No extra details provided.").replace("\n", "<br>")
+
+    return f"""\
+<!doctype html>
+<html>
+  <body style="margin:0;padding:0;background:#fff8fb;font-family:'Segoe UI',Arial,sans-serif;color:#433a57;">
+    <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:linear-gradient(135deg,#fff8fb 0%,#f8f1ff 48%,#f4fff9 100%);padding:28px 12px;">
+      <tr>
+        <td align="center">
+          <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="max-width:640px;background:#ffffff;border:1px solid #f0deef;border-radius:18px;overflow:hidden;box-shadow:0 18px 44px rgba(165,134,190,0.18);">
+            <tr>
+              <td style="padding:28px 30px;background:linear-gradient(135deg,#eadcff 0%,#ffddea 58%,#ddf6ea 100%);">
+                <div style="display:inline-block;padding:7px 12px;border-radius:999px;background:rgba(255,255,255,0.72);border:1px solid rgba(255,255,255,0.85);color:#6b5a86;font-size:13px;font-weight:700;">
+                  New custom order
+                </div>
+                <h1 style="margin:14px 0 6px;font-size:34px;line-height:1.08;color:#fff4d6;font-weight:900;-webkit-text-stroke:2px #6b4d45;text-shadow:1px 0 #6b4d45,-1px 0 #6b4d45,0 1px #6b4d45,0 -1px #6b4d45,2px 3px 0 #6b4d45,4px 6px 10px rgba(82,60,56,0.32);">
+                  Minn Miru Handcrafted
+                </h1>
+                <p style="margin:0;color:#6b5a86;font-size:15px;line-height:1.6;">
+                  A customer sent a crochet request from your website.
+                </p>
+              </td>
+            </tr>
+            <tr>
+              <td style="padding:26px 30px;">
+                <table role="presentation" width="100%" cellpadding="0" cellspacing="0">
+                  <tr>
+                    <td style="padding:0 0 14px;">
+                      <h2 style="margin:0;color:#433a57;font-size:20px;line-height:1.3;">Customer Details</h2>
+                    </td>
+                  </tr>
+                </table>
+
+                <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="border-collapse:separate;border-spacing:0 10px;">
+                  <tr>
+                    <td style="width:150px;padding:12px 14px;background:#fff8fb;border-radius:12px 0 0 12px;color:#7d7391;font-size:13px;font-weight:700;">Name</td>
+                    <td style="padding:12px 14px;background:#fff8fb;border-radius:0 12px 12px 0;color:#433a57;font-size:15px;font-weight:700;">{name}</td>
+                  </tr>
+                  <tr>
+                    <td style="width:150px;padding:12px 14px;background:#f8f1ff;border-radius:12px 0 0 12px;color:#7d7391;font-size:13px;font-weight:700;">Email</td>
+                    <td style="padding:12px 14px;background:#f8f1ff;border-radius:0 12px 12px 0;color:#433a57;font-size:15px;">
+                      <a href="mailto:{customer_email}" style="color:#6b5a86;text-decoration:none;font-weight:700;">{customer_email}</a>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td style="width:150px;padding:12px 14px;background:#f4fff9;border-radius:12px 0 0 12px;color:#7d7391;font-size:13px;font-weight:700;">Product Type</td>
+                    <td style="padding:12px 14px;background:#f4fff9;border-radius:0 12px 12px 0;color:#433a57;font-size:15px;font-weight:700;">{product}</td>
+                  </tr>
+                  <tr>
+                    <td style="width:150px;padding:12px 14px;background:#fffaf0;border-radius:12px 0 0 12px;color:#7d7391;font-size:13px;font-weight:700;">Colors</td>
+                    <td style="padding:12px 14px;background:#fffaf0;border-radius:0 12px 12px 0;color:#433a57;font-size:15px;">{colors}</td>
+                  </tr>
+                </table>
+
+                <div style="margin-top:18px;padding:18px;border-radius:16px;background:#ffffff;border:1px solid #f0deef;">
+                  <div style="color:#7d7391;font-size:13px;font-weight:800;text-transform:uppercase;letter-spacing:0.04em;">Custom details</div>
+                  <p style="margin:10px 0 0;color:#433a57;font-size:15px;line-height:1.75;">{message}</p>
+                </div>
+
+                <div style="margin-top:20px;padding:14px 16px;border-radius:14px;background:#fff8fb;color:#7d7391;font-size:13px;line-height:1.6;">
+                  Reply directly to this email to answer the customer. If they uploaded a reference image, it is attached to this message.
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <td style="padding:18px 30px;background:#fbfffd;border-top:1px solid #f0deef;color:#7d7391;font-size:12px;line-height:1.6;text-align:center;">
+                Minn Miru Handcrafted custom order form
+              </td>
+            </tr>
+          </table>
+        </td>
+      </tr>
+    </table>
+  </body>
+</html>
+"""
+
+
 def send_custom_order_email(config, order_data):
     required_settings = [
         config.get("SMTP_HOST"),
@@ -132,6 +216,7 @@ def send_custom_order_email(config, order_data):
             ]
         )
     )
+    email.add_alternative(build_custom_order_email_html(order_data), subtype="html")
 
     reference_image = order_data.get("reference_image")
     if reference_image and reference_image.filename:

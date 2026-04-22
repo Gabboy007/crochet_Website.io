@@ -1,4 +1,10 @@
 :root {
+  --font-body: "Segoe UI", Arial, sans-serif;
+  --font-display: "Shifa Rame", "Comic Sans MS", cursive, sans-serif;
+  --title-fill: #fff4d6;
+  --title-outline: #6b4d45;
+  --title-warm-glow: rgba(230, 200, 188, 0.65);
+  --title-shadow: rgba(82, 60, 56, 0.38);
   --text: #433a57;
   --muted: #7d7391;
   --border: rgba(180, 155, 200, 0.22);
@@ -17,7 +23,7 @@
 * { margin: 0; padding: 0; box-sizing: border-box; }
 html { scroll-behavior: smooth; }
 body {
-  font-family: "Outfit", sans-serif;
+  font-family: var(--font-body);
   color: var(--text);
   background:
     radial-gradient(circle at top left, rgba(255, 221, 234, 0.72), transparent 28%),
@@ -31,6 +37,60 @@ a { text-decoration: none; color: inherit; }
 button, input, textarea, select { font: inherit; }
 button { border: none; cursor: pointer; }
 img { display: block; width: 100%; max-width: 100%; }
+
+.brand-mark,
+.brand h1,
+.hero-text h2,
+.hero-card-main h3,
+.section-heading h2,
+.about-copy h2,
+.cta-copy h2,
+.modal-content h2,
+.footer-grid h3,
+.empty-showcase h3 {
+  font-family: var(--font-display);
+  font-weight: 400;
+  line-height: 1.08;
+}
+
+.hero-text h2,
+.hero-card-main h3,
+.section-heading h2,
+.about-copy h2,
+.cta-copy h2,
+.modal-content h2,
+.footer-grid h3,
+.empty-showcase h3 {
+  color: var(--title-fill);
+  -webkit-text-stroke: 0.085em var(--title-outline);
+  paint-order: stroke fill;
+  text-shadow:
+    0.045em 0 var(--title-outline),
+    -0.045em 0 var(--title-outline),
+    0 0.045em var(--title-outline),
+    0 -0.045em var(--title-outline),
+    0.035em 0.035em var(--title-outline),
+    -0.035em 0.035em var(--title-outline),
+    0.035em -0.035em var(--title-outline),
+    -0.035em -0.035em var(--title-outline),
+    0 0 0.34em var(--title-warm-glow),
+    0.08em 0.11em 0 var(--title-outline),
+    0.15em 0.21em 0.2em var(--title-shadow);
+}
+
+.brand h1 {
+  color: var(--title-fill);
+  -webkit-text-stroke: 0.055em var(--title-outline);
+  paint-order: stroke fill;
+  text-shadow:
+    0.03em 0 var(--title-outline),
+    -0.03em 0 var(--title-outline),
+    0 0.03em var(--title-outline),
+    0 -0.03em var(--title-outline),
+    0 0 0.18em var(--title-warm-glow),
+    0.045em 0.06em 0 var(--title-outline),
+    0.08em 0.12em 0.14em var(--title-shadow);
+}
 
 .container, .admin-shell, .login-shell { width: min(1180px, calc(100% - 24px)); margin: 0 auto; }
 .section { padding: 90px 0; }
@@ -84,7 +144,7 @@ img { display: block; width: 100%; max-width: 100%; }
   font-weight: 800;
   color: #5d4f74;
 }
-.brand h1 { font-size: 1.1rem; }
+.brand h1 { font-size: 1.12rem; }
 .brand p { font-size: 0.85rem; color: var(--muted); }
 
 .nav { display: flex; gap: 22px; align-items: center; color: var(--muted); }
@@ -156,7 +216,7 @@ img { display: block; width: 100%; max-width: 100%; }
   margin-top: 18px;
 }
 .hero-text { position: relative; }
-.hero-text h2 { font-size: clamp(2.4rem, 5vw, 4.4rem); line-height: 1.05; margin: 16px 0; }
+.hero-text h2 { font-size: clamp(2.2rem, 4.6vw, 4rem); line-height: 1.05; margin: 16px 0; }
 .hero-text p, .admin-muted { color: var(--muted); line-height: 1.8; }
 .hero-actions, .form-actions, .flash-stack, .thumb-gallery { display: flex; flex-wrap: wrap; gap: 14px; }
 .mini-stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; margin-top: 32px; }
@@ -206,7 +266,7 @@ img { display: block; width: 100%; max-width: 100%; }
 .yarn-ball::after { inset: 34%; }
 
 .section-heading { text-align: center; max-width: 720px; margin: 0 auto 48px; }
-.section-heading h2, .about-copy h2 { font-size: clamp(2rem, 4vw, 3rem); margin: 14px 0; }
+.section-heading h2, .about-copy h2 { font-size: clamp(1.85rem, 3.6vw, 2.75rem); margin: 14px 0; }
 .product-grid, .review-showcase { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }
 .admin-card-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 24px; }
 
@@ -835,12 +895,16 @@ img { display: block; width: 100%; max-width: 100%; }
     border-radius: 50%;
   }
   .hero-text h2 {
-    font-size: 2.2rem;
+    font-size: 1.86rem;
     line-height: 1.08;
+    max-width: 14ch;
+    margin-left: auto;
+    margin-right: auto;
     margin-bottom: 14px;
+    overflow-wrap: break-word;
   }
   .hero-text p {
-    max-width: 32rem;
+    max-width: 31ch;
     margin: 0 auto;
     font-size: 1rem;
   }
@@ -956,10 +1020,10 @@ img { display: block; width: 100%; max-width: 100%; }
   .container, .admin-shell, .login-shell { width: min(100% - 16px, 1180px); }
   .site-header { width: min(100% - 16px, 1180px); margin-top: 8px; }
   .brand-mark { width: 46px; height: 46px; border-radius: 14px; }
-  .brand h1 { font-size: 1rem; }
+  .brand h1 { font-size: 0.98rem; }
   .hero-text { padding-top: 8px; }
-  .hero-text h2 { font-size: 1.9rem; }
-  .hero-text p { font-size: 0.95rem; }
+  .hero-text h2 { font-size: 1.45rem; max-width: 13ch; }
+  .hero-text p { font-size: 0.95rem; max-width: 30ch; }
   .badge { font-size: 0.8rem; }
   .btn, .mini-action { padding: 13px 18px; }
   .product-body, .review-card-inner, .about-panel, .footer-grid, .cta-box, .modal-content, .admin-hero, .admin-form-shell, .admin-entity-card, .editor-sidebar, .login-card { padding: 18px; }
@@ -973,7 +1037,7 @@ img { display: block; width: 100%; max-width: 100%; }
   .section-heading h2,
   .about-copy h2,
   .cta-copy h2 {
-    font-size: 1.75rem;
+    font-size: 1.48rem;
   }
 }
 
@@ -988,7 +1052,7 @@ img { display: block; width: 100%; max-width: 100%; }
   --admin-text: #201f1e;
   --admin-muted: #605e5c;
   padding: 0;
-  font-family: "Segoe UI", "Outfit", Arial, sans-serif;
+  font-family: var(--font-body);
   color: var(--admin-text);
   background: #ffffff;
 }
@@ -1914,6 +1978,118 @@ img { display: block; width: 100%; max-width: 100%; }
   border: 1px solid rgba(206, 183, 244, 0.3);
 }
 
+.admin-page .hybrid-admin .editor-grid {
+  display: grid;
+  grid-template-columns: minmax(280px, 360px) minmax(0, 1fr);
+  align-items: start;
+  gap: 20px;
+}
+
+.admin-page .hybrid-admin .editor-sidebar,
+.admin-page .hybrid-admin .admin-form-shell {
+  padding: 18px;
+}
+
+.admin-page .hybrid-admin .editor-sidebar {
+  display: grid;
+  gap: 16px;
+  align-self: start;
+}
+
+.admin-page .hybrid-admin .editor-sidebar-heading {
+  display: grid;
+  gap: 6px;
+}
+
+.admin-page .hybrid-admin .editor-sidebar-heading.compact {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding-top: 4px;
+}
+
+.admin-page .hybrid-admin .editor-sidebar-heading h2 {
+  margin: 0;
+  color: #433a57;
+  font-size: 1.15rem;
+  line-height: 1.2;
+}
+
+.admin-page .hybrid-admin .editor-sidebar-heading.compact h2 {
+  font-size: 1rem;
+}
+
+.admin-page .hybrid-admin .editor-sidebar .main-thumb {
+  width: 100%;
+  height: auto;
+  min-height: 0;
+  max-height: 280px;
+  aspect-ratio: 4 / 3;
+  border-radius: 8px;
+  object-fit: cover;
+}
+
+.admin-page .hybrid-admin .thumb-gallery {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(132px, 1fr));
+  gap: 12px;
+  margin-top: 0;
+}
+
+.admin-page .hybrid-admin .thumb-card {
+  width: 100%;
+  min-width: 0;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  padding: 8px;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.78);
+  border: 1px solid rgba(206, 183, 244, 0.28);
+}
+
+.admin-page .hybrid-admin .thumb-card img {
+  grid-column: 1 / -1;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 1 / 1;
+  border-radius: 8px;
+  object-fit: cover;
+}
+
+.admin-page .hybrid-admin .thumb-card img.main {
+  border-color: #ceb7f4;
+  box-shadow: 0 0 0 3px rgba(206, 183, 244, 0.18);
+}
+
+.admin-page .hybrid-admin .thumb-card form {
+  display: contents;
+}
+
+.admin-page .hybrid-admin .thumb-card .mini-action {
+  min-height: 38px;
+  padding: 8px 10px;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.88);
+  border: 1px solid rgba(206, 183, 244, 0.32);
+  color: #433a57;
+}
+
+.admin-page .hybrid-admin .thumb-card form .mini-action {
+  color: #8d364b;
+  border-color: rgba(247, 191, 214, 0.65);
+  background: rgba(255, 221, 234, 0.38);
+}
+
+.admin-page .hybrid-admin .main-image-picker {
+  grid-template-columns: repeat(auto-fill, minmax(112px, 1fr));
+}
+
+.admin-page .hybrid-admin .main-image-choice {
+  min-height: 100%;
+}
+
 .image-crop-modal {
   position: fixed;
   inset: 0;
@@ -2076,6 +2252,18 @@ img { display: block; width: 100%; max-width: 100%; }
   .admin-page .hybrid-admin .admin-nav button span {
     width: 30px;
     height: 30px;
+  }
+
+  .admin-page .hybrid-admin .editor-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .admin-page .hybrid-admin .editor-sidebar .main-thumb {
+    max-height: 240px;
+  }
+
+  .admin-page .hybrid-admin .thumb-gallery {
+    grid-template-columns: repeat(auto-fill, minmax(128px, 1fr));
   }
 
   .image-crop-modal {

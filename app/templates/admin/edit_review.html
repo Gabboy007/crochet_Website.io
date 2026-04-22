@@ -11,11 +11,21 @@
 {% block admin_content %}
 <section class="editor-grid">
     <aside class="editor-sidebar">
+        <div class="editor-sidebar-heading">
+            <span class="admin-eyebrow">Cover</span>
+            <h2>Review Images</h2>
+        </div>
+
         {% if review.main_image %}
         <img class="main-thumb" src="{{ url_for('static', filename=review.main_image.image_path) }}" alt="{{ review.title }}">
         {% else %}
         <img class="main-thumb" src="{{ url_for('static', filename='images/review1.jpg') }}" alt="No image">
         {% endif %}
+
+        <div class="editor-sidebar-heading compact">
+            <span class="admin-eyebrow">{{ review.images|length }} image{% if review.images|length != 1 %}s{% endif %}</span>
+            <h2>Gallery</h2>
+        </div>
 
         <div class="thumb-gallery">
             {% for image in review.images %}
