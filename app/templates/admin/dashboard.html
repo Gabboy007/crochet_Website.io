@@ -69,6 +69,11 @@
                 <span class="status-pill">{{ product.images|length }} image{% if product.images|length != 1 %}s{% endif %}</span>
             </div>
 
+            <div class="admin-entity-tags">
+                <span>{{ product.rarity or "Handmade piece" }}</span>
+                <span>{{ product.condition or "Ready to feature" }}</span>
+            </div>
+
             <p class="admin-muted">{{ product.description or "No description added yet." }}</p>
 
             <div class="admin-stat-row">

@@ -11,7 +11,10 @@
         <aside class="admin-sidebar" aria-label="Admin navigation">
             <div class="admin-sidebar-brand">
                 <strong>MM</strong>
-                <span>Minn Miru</span>
+                <span>
+                    Minn Miru
+                    <small>Handcrafted dashboard</small>
+                </span>
             </div>
 
             <nav class="admin-nav">
@@ -35,6 +38,12 @@
                 </form>
             </nav>
 
+            <section class="admin-sidebar-card" aria-label="Workspace note">
+                <p class="admin-nav-title">Workspace</p>
+                <h2>Keep everything in sync</h2>
+                <p>Products, reviews, and storefront updates all flow from here, so one clean dashboard keeps the whole site feeling polished.</p>
+            </section>
+
         </aside>
 
         <main class="admin-shell">
@@ -43,6 +52,10 @@
                     <p class="admin-eyebrow">Minn Miru Admin</p>
                     <h1>{% block admin_heading %}Admin{% endblock %}</h1>
                     <p>{% block admin_subtitle %}{% endblock %}</p>
+                    <div class="admin-hero-meta">
+                        <span>Storefront updates live here</span>
+                        <span>Designed for quick daily edits</span>
+                    </div>
                 </div>
 
                 <div class="admin-hero-actions">

@@ -68,6 +68,11 @@
                 <span class="status-pill">{{ review.score }}</span>
             </div>
 
+            <div class="admin-entity-tags">
+                <span>{{ review.customer_name }}</span>
+                <span>{{ review.images|length }} gallery item{% if review.images|length != 1 %}s{% endif %}</span>
+            </div>
+
             <p><strong>{{ review.customer_name }}</strong></p>
             <p class="admin-muted">{{ review.review_text }}</p>
 

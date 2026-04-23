@@ -11,6 +11,11 @@
 {% block admin_content %}
 <section class="admin-form-shell">
     <form method="POST" enctype="multipart/form-data" class="admin-form">
+        <div class="form-section-heading">
+            <p class="admin-eyebrow">Review Story</p>
+            <h2>Build a testimonial that feels trustworthy</h2>
+        </div>
+
         <label>
             Customer Name
             <input type="text" name="customer_name" required>
@@ -37,6 +42,11 @@
             Review Text
             <textarea name="review_text" required></textarea>
         </label>
+
+        <div class="form-section-heading">
+            <p class="admin-eyebrow">Images</p>
+            <h2>Add photos that support the review</h2>
+        </div>
 
         <label>
             Review Images

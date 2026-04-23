@@ -11,6 +11,11 @@
 {% block admin_content %}
 <section class="admin-form-shell">
     <form method="POST" enctype="multipart/form-data" class="admin-form">
+        <div class="form-section-heading">
+            <p class="admin-eyebrow">Product Details</p>
+            <h2>Set up the main catalog card</h2>
+        </div>
+
         <label>
             Product Title
             <input type="text" name="title" required>
@@ -26,6 +31,11 @@
                 Price
                 <input type="number" name="price" step="0.01" min="0" placeholder="PHP 0.00">
             </label>
+        </div>
+
+        <div class="form-section-heading">
+            <p class="admin-eyebrow">Gallery</p>
+            <h2>Add polished product images</h2>
         </div>
 
         <label>

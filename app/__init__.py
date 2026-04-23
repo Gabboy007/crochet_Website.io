@@ -1,4 +1,5 @@
 import os
+import tempfile
 
 from flask import Flask
 from flask_migrate import Migrate
@@ -12,7 +13,11 @@ migrate = Migrate()
 
 
 def create_app():
-    app = Flask(__name__, instance_relative_config=True)
+    instance_path = os.environ.get("INSTANCE_PATH")
+    if not instance_path and os.environ.get("VERCEL"):
+        instance_path = os.path.join(tempfile.gettempdir(), "crochet_bloom_instance")
+
+    app = Flask(__name__, instance_relative_config=True, instance_path=instance_path)
     app.config.from_object(Config)
 
     os.makedirs(app.instance_path, exist_ok=True)

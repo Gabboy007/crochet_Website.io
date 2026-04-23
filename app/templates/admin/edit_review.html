@@ -41,6 +41,11 @@
 
     <section class="admin-form-shell">
         <form method="POST" enctype="multipart/form-data" class="admin-form">
+            <div class="form-section-heading">
+                <p class="admin-eyebrow">Review Story</p>
+                <h2>Fine-tune this customer spotlight</h2>
+            </div>
+
             <label>
                 Customer Name
                 <input type="text" name="customer_name" value="{{ review.customer_name }}" required>
@@ -79,6 +84,11 @@
                 {% endfor %}
             </fieldset>
             {% endif %}
+
+            <div class="form-section-heading">
+                <p class="admin-eyebrow">Images</p>
+                <h2>Add or refresh supporting photos</h2>
+            </div>
 
             <label>
                 Add More Images

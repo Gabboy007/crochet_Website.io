@@ -9,12 +9,21 @@ def as_bool(value, default=False):
     return str(value).strip().lower() in {"1", "true", "yes", "on"}
 
 
+def database_url():
+    value = os.environ.get("DATABASE_URL")
+    if value:
+        if value.startswith("postgres://"):
+            return value.replace("postgres://", "postgresql+psycopg://", 1)
+        if value.startswith("postgresql://"):
+            return value.replace("postgresql://", "postgresql+psycopg://", 1)
+        return value
+
+    return "sqlite:///" + os.path.join(BASE_DIR, "instance", "app.db")
+
+
 class Config:
     SECRET_KEY = os.environ.get("SECRET_KEY", "change-this-in-production")
-    SQLALCHEMY_DATABASE_URI = os.environ.get(
-        "DATABASE_URL",
-        "sqlite:///" + os.path.join(BASE_DIR, "instance", "app.db"),
-    )
+    SQLALCHEMY_DATABASE_URI = database_url()
     SQLALCHEMY_TRACK_MODIFICATIONS = False
     UPLOAD_FOLDER = os.environ.get(
         "UPLOAD_FOLDER",

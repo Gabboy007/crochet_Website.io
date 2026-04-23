@@ -94,6 +94,45 @@ Or on Windows:
 run_prod.bat
 ```
 
+## Deploy On Vercel
+
+This project includes `index.py` and `vercel.json` so Vercel can run the Flask app as a Python Function.
+
+1. Push the project to GitHub, GitLab, or Bitbucket.
+2. In Vercel, choose **Add New Project** and import the repository.
+3. Keep the default framework settings. Vercel will install `requirements.txt` and use `index.py`.
+4. Add these Environment Variables in the Vercel project settings:
+
+```env
+SECRET_KEY=replace-with-a-long-random-secret
+ADMIN_USERNAME=your-admin-name
+ADMIN_PASSWORD=your-strong-password
+FLASK_ENV=production
+FLASK_DEBUG=0
+TRUST_PROXY=1
+SESSION_COOKIE_SECURE=1
+DATABASE_URL=postgresql://user:password@host:5432/database
+CONTACT_EMAIL=hello@crochetbloom.com
+SMTP_HOST=smtp.gmail.com
+SMTP_PORT=587
+SMTP_USERNAME=your-email@gmail.com
+SMTP_PASSWORD=your-app-password
+SMTP_USE_TLS=1
+SMTP_SENDER=your-email@gmail.com
+```
+
+5. Deploy.
+6. Run the database migrations against the hosted database before opening the site:
+
+```bash
+set DATABASE_URL=postgresql://user:password@host:5432/database
+flask --app wsgi db upgrade
+```
+
+On macOS/Linux, use `export DATABASE_URL=...` instead of `set DATABASE_URL=...`.
+
+Vercel's filesystem is temporary at runtime, so do not rely on SQLite, dashboard-saved email settings, or uploaded admin images for production persistence. Use a hosted Postgres database through `DATABASE_URL`, and use environment variables for email settings.
+
 ## Domain Setup
 
 Typical setup for a real domain:
