@@ -133,6 +133,8 @@ On macOS/Linux, use `export DATABASE_URL=...` instead of `set DATABASE_URL=...`.
 
 Vercel's filesystem is temporary at runtime, so do not rely on SQLite, dashboard-saved email settings, or uploaded admin images for production persistence. Use a hosted Postgres database through `DATABASE_URL`, and use environment variables for email settings.
 
+If `DATABASE_URL` is not set on Vercel, the app creates a temporary SQLite database so the deployment can boot, but any products, reviews, or uploaded images can disappear when the function instance is replaced. For a real storefront, set `DATABASE_URL` and run migrations.
+
 ## Domain Setup
 
 Typical setup for a real domain:

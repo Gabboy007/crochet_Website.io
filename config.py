@@ -1,4 +1,5 @@
 import os
+import tempfile
 
 BASE_DIR = os.path.abspath(os.path.dirname(__file__))
 
@@ -18,18 +19,33 @@ def database_url():
             return value.replace("postgresql://", "postgresql+psycopg://", 1)
         return value
 
+    if os.environ.get("VERCEL"):
+        return "sqlite:///" + os.path.join(tempfile.gettempdir(), "crochet_bloom_app.db")
+
     return "sqlite:///" + os.path.join(BASE_DIR, "instance", "app.db")
+
+
+def upload_folder():
+    value = os.environ.get("UPLOAD_FOLDER")
+    if value:
+        return value
+
+    if os.environ.get("VERCEL"):
+        return os.path.join(tempfile.gettempdir(), "crochet_bloom_uploads")
+
+    return os.path.join(BASE_DIR, "app", "static", "uploads")
 
 
 class Config:
     SECRET_KEY = os.environ.get("SECRET_KEY", "change-this-in-production")
     SQLALCHEMY_DATABASE_URI = database_url()
     SQLALCHEMY_TRACK_MODIFICATIONS = False
-    UPLOAD_FOLDER = os.environ.get(
-        "UPLOAD_FOLDER",
-        os.path.join(BASE_DIR, "app", "static", "uploads"),
-    )
+    UPLOAD_FOLDER = upload_folder()
     MAX_CONTENT_LENGTH = 16 * 1024 * 1024
+    AUTO_CREATE_SQLITE_DB = as_bool(
+        os.environ.get("AUTO_CREATE_SQLITE_DB"),
+        default=bool(os.environ.get("VERCEL") and not os.environ.get("DATABASE_URL")),
+    )
 
     ADMIN_USERNAME = os.environ.get("ADMIN_USERNAME", "admin")
     ADMIN_PASSWORD = os.environ.get("ADMIN_PASSWORD", "admin123")

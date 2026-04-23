@@ -35,4 +35,8 @@ def create_app():
 
     app.register_blueprint(main)
 
+    if app.config.get("AUTO_CREATE_SQLITE_DB"):
+        with app.app_context():
+            db.create_all()
+
     return app
