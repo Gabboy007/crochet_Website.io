@@ -96,11 +96,11 @@ run_prod.bat
 
 ## Deploy On Vercel
 
-This project includes `api/index.py` and `vercel.json` so Vercel can run the Flask app as a Python Function.
+This project includes `index.py` and `vercel.json` so Vercel can run the Flask app as a Python Function.
 
 1. Push the project to GitHub, GitLab, or Bitbucket.
 2. In Vercel, choose **Add New Project** and import the repository.
-3. Keep the default framework settings. Vercel will install `requirements.txt` and use `api/index.py`.
+3. Keep the default framework settings. Vercel will install `requirements.txt` and use `index.py`.
 4. Add these Environment Variables in the Vercel project settings:
 
 ```env
